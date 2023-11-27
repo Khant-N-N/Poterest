@@ -1,0 +1,43 @@
+import express, { NextFunction, Request, Response } from "express";
+import createHttpError, { isHttpError } from "http-errors";
+import morgan from "morgan";
+import userRouter from "./routes/user.route";
+import MongoStore from "connect-mongo";
+import session from "express-session";
+import env from "./utils/ValidEnv";
+
+const app = express();
+
+app.use(morgan("dev"));
+app.use(express.json());
+
+app.use(
+  session({
+    secret: env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    rolling: true,
+    store: MongoStore.create({
+      mongoUrl: env.MONGO_CONNECT,
+    }),
+  })
+);
+
+app.use("/api/user", userRouter);
+
+app.use((req, res, next) => {
+  next(createHttpError(404, "Endpoint not found"));
+});
+
+app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
+  console.error(error);
+  let errorMessage = "An unknown error has occured";
+  let status = 500;
+  if (isHttpError(error)) {
+    status = error.status;
+    errorMessage = error.message;
+  }
+  res.status(status).json({ error: errorMessage });
+});
+
+export default app;
