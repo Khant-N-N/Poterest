@@ -1,4 +1,4 @@
-import { RequestHandler, json } from "express";
+import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
 import UserModel from "../models/user.model";
@@ -9,11 +9,22 @@ interface userBody {
   password?: string;
 }
 
-export const SignUp: RequestHandler<unknown, unknown, userBody> = async (
-  req,
-  res,
-  next
-) => {
+export const GetAuthenicatedUser: RequestHandler = async (req, res, next) => {
+  try {
+    const user = await UserModel.findById(req.session.userId).exec();
+    if (!user) throw createHttpError(404, "user not found");
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const SignUp: RequestHandler<
+  unknown,
+  unknown,
+  userBody,
+  unknown
+> = async (req, res, next) => {
   const username = req.body.username;
   const passwordRaw = req.body.password;
   const email = req.body.email;

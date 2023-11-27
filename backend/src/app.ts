@@ -5,6 +5,8 @@ import userRouter from "./routes/user.route";
 import MongoStore from "connect-mongo";
 import session from "express-session";
 import env from "./utils/ValidEnv";
+import postRouter from "./routes/post.route";
+import { requireAuth } from "./utils/auth";
 
 const app = express();
 
@@ -24,6 +26,7 @@ app.use(
 );
 
 app.use("/api/user", userRouter);
+app.use("/api/posts", requireAuth, postRouter);
 
 app.use((req, res, next) => {
   next(createHttpError(404, "Endpoint not found"));
