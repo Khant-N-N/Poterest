@@ -1,20 +1,26 @@
 import { Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { User } from "./models/user.model";
 import { GetAuthenticatedUser } from "./networks/user.api";
-import LogIn from "./pages/LogIn";
-import SignUp from "./pages/SignUp";
+import Loader from "./components/Loader";
+const LogIn = lazy(() => import("./pages/LogIn"));
+const SignUp = lazy(() => import("./pages/SignUp"));
+const Home = lazy(() => import("./pages/Home"));
+const LogInHome = lazy(() => import("./pages/LogInHome"));
 
 const App = () => {
   const [logInUser, setLogInUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const getAuthentication = async () => {
       try {
+        setLoading(true);
         const user = await GetAuthenticatedUser();
         setLogInUser(user);
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         console.error(error);
       }
     };
@@ -24,11 +30,31 @@ const App = () => {
   return (
     <>
       <Navbar logInUser={logInUser} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<LogIn />} />
-        <Route path="/signup" element={<SignUp />} />
-      </Routes>
+      <Suspense
+        fallback={
+          <div className="h-screen w-full bg-black/40 z-50 flex justify-center items-center">
+            <Loader />
+          </div>
+        }
+      >
+        {loading ? (
+          <div className="h-screen w-full bg-black/40 z-50 flex justify-center items-center">
+            <Loader />
+          </div>
+        ) : (
+          <Routes>
+            <Route path="/" element={logInUser ? <LogInHome /> : <Home />} />
+            <Route
+              path="/login"
+              element={<LogIn onLogIn={(user) => setLogInUser(user)} />}
+            />
+            <Route
+              path="/signup"
+              element={<SignUp onSignUp={(user) => setLogInUser(user)} />}
+            />
+          </Routes>
+        )}
+      </Suspense>
     </>
   );
 };

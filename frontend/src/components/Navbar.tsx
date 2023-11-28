@@ -6,8 +6,10 @@ interface NavProps {
 }
 const Navbar = ({ logInUser }: NavProps) => {
   return (
-    <nav className="flex items-center justify-between px-20 py-3 text-[20px] font-semibold">
-      <div>Poterest</div>
+    <nav className="flex z-30 w-full fixed top-0 items-center justify-between px-14 md:px-20 py-6 text-[20px] font-semibold">
+      <Link to="/" className="text-[var(--pri-red)] text-[23px]">
+        Poterest
+      </Link>
       {logInUser ? (
         <></>
       ) : (

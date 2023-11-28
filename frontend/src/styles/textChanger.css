@@ -1,0 +1,14 @@
+.text-fade {
+    animation: fadeUp 3.1s infinite ease-in-out;
+}
+
+@keyframes fadeUp {
+    0% {
+        transform: translateY(10px);
+    }
+
+    100% {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+}
