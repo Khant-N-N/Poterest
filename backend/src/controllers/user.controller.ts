@@ -44,6 +44,8 @@ export const SignUp: RequestHandler<
       email: email,
       password: hashedPassword,
     });
+
+    req.session.userId = CreatedUser._id;
     res.status(201).json(CreatedUser);
   } catch (error) {
     next(error);
@@ -71,7 +73,11 @@ export const SignIn: RequestHandler<
 
     req.session.userId = findUser._id;
 
-    res.status(201).json(findUser);
+    const userObject = findUser.toObject();
+
+    const { password: pass, ...rest } = userObject;
+
+    res.status(201).json(rest);
   } catch (error) {
     next(error);
   }
