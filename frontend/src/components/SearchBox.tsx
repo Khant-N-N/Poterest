@@ -22,7 +22,7 @@ const SearchBox = () => {
         type="text"
         id="searchBox"
         placeholder={`${!isType ? "    " : ""} Search`}
-        className="font-normal py-4 px-5 rounded-full bg-[#e1e1e1] md:w-[20rem] lg:w-[50rem] focus:outline-none focus:ring focus:border-blue-400"
+        className="font-normal py-4 px-5 rounded-full bg-[#e1e1e1] md:w-[20rem] lg:w-[30rem] xl:w-[40rem] focus:outline-none focus:ring focus:border-blue-400"
       />
     </div>
   );

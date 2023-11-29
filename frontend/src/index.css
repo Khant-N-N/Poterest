@@ -4,10 +4,10 @@
 @tailwind utilities;
 
 :root {
-  --light: #eeecec;
+  --light: #f9f3f3;
   --sec-red: #ad081b;
   --pri-red: #e60023;
-  --sec-light: #bebcbc;
+  --sec-light: #e1e1e1;
 }
 
 body {

@@ -10,7 +10,7 @@ const Navbar = () => {
   const { logInUser } = useSelector((state: RootState) => state.user);
 
   return (
-    <nav className="flex z-30 w-full fixed top-0 items-center justify-between px-14 md:px-20 py-4 text-[20px] font-semibold">
+    <nav className="hidden md:flex z-30 w-full fixed top-0 items-center justify-between gap-2 px-8 lg:px-20 py-4 lg:text-[20px] font-semibold">
       <Link to="/" className="text-[var(--pri-red)] text-[23px]">
         <TfiPinterest className="text-[30px]" /> {!logInUser && "Poterest"}
       </Link>
@@ -18,20 +18,20 @@ const Navbar = () => {
         <div className="hidden md:flex gap-2">
           <NavLink
             to="/"
-            className={(isActive) =>
+            className={({ isActive }) =>
               isActive
                 ? "bg-black text-white p-5 rounded-full"
-                : "p-5 rounded-full"
+                : "p-5 rounded-full hover:bg-[var(--sec-light)]"
             }
           >
             Home
           </NavLink>
           <NavLink
             to="/create"
-            className={(isActive) =>
+            className={({ isActive }) =>
               isActive
                 ? "bg-black text-white p-5 rounded-full"
-                : "p-5 rounded-full"
+                : "p-5 rounded-full hover:bg-[var(--sec-light)]"
             }
           >
             Create
@@ -45,18 +45,20 @@ const Navbar = () => {
           <div className="flex items-center gap-8">
             <NavLink
               to="/message"
-              className={(isActive) =>
-                isActive ? "text-black" : "text-[var(--sec-light)]"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-black"
+                  : "hover:bg-[var(--sec-light)] text-gray-400 rounded-full p-2"
               }
             >
               <AiFillMessage className="text-[40px]" />
             </NavLink>
             <NavLink
               to="/profile"
-              className={(isActive) =>
+              className={({ isActive }) =>
                 isActive
                   ? "border-2 border-black p-1 w-10 h-10 rounded-full overflow-hidden"
-                  : "w-10 h-10 rounded-full overflow-hidden"
+                  : "w-10 h-10 rounded-full overflow-hidden hover:bg-[var(--sec-light)]"
               }
             >
               <img
