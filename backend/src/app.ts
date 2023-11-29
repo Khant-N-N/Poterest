@@ -15,6 +15,7 @@ app.use(express.json());
 
 app.use(
   session({
+    name: "poterest_kies",
     secret: env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
