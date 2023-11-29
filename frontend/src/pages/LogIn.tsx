@@ -51,17 +51,17 @@ const LogIn = ({ onLogIn }: logInProps) => {
     }
   };
   return (
-    <section className="absolute z-50 h-screen w-full">
+    <section className="absolute z-50 min-h-screen w-full">
       <div
         onClick={() => navigate("/")}
-        className="absolute h-screen w-full bg-black/40"
+        className="absolute h-full w-full bg-black/40"
       />
       {loading && (
-        <div className="absolute h-screen w-full bg-black/40 z-50 flex justify-center items-center">
+        <div className="absolute h-full w-full bg-black/40 z-50 flex justify-center items-center">
           <Loader />
         </div>
       )}
-      <div className="max-w-[600px] relative h-screen bg-[var(--light)] rounded-3xl p-12 mx-auto">
+      <div className="max-w-[600px] my-4 relative h-screen bg-[var(--light)] rounded-3xl p-12 mx-auto">
         <Link
           to="/"
           className="absolute right-4 top-4 hover:bg-[var(--sec-light)] p-2 rounded-full"
@@ -80,7 +80,7 @@ const LogIn = ({ onLogIn }: logInProps) => {
             Email*
           </label>
           <input
-            className="w-[90%]  py-4 px-5 rounded-3xl border-[3px] border-gray-400 focus:outline-none focus:ring focus:border-blue-500"
+            className="w-[90%] py-4 px-5 rounded-3xl border-[3px] border-gray-400 focus:outline-none focus:ring focus:border-blue-500"
             type="email"
             id="email"
             value={formData.email}

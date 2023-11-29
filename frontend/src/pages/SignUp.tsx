@@ -59,7 +59,7 @@ const SignUp = ({ onSignUp }: SignUpProps) => {
           <Loader />
         </div>
       )}
-      <div className="max-w-[600px] relative h-full bg-[var(--light)] rounded-3xl p-12 mx-auto">
+      <div className="max-w-[600px] relative my-4 h-full bg-[var(--light)] rounded-3xl p-12 mx-auto">
         <Link
           to="/"
           className="absolute right-4 top-4 hover:bg-[var(--sec-light)] p-2 rounded-full"
@@ -127,9 +127,7 @@ const SignUp = ({ onSignUp }: SignUpProps) => {
               />
             )}
           </div>
-          <span className="w-[90%] mt-3 hover:underline">
-            Forgot your password?
-          </span>
+
           <button
             type="submit"
             className="w-[90%] py-4 px-8 mt-10 bg-[var(--pri-red)] text-[22px] hover:bg-[var(--sec-red)] text-white rounded-full"

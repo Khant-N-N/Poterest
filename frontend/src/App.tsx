@@ -4,20 +4,25 @@ import { useState, useEffect, lazy, Suspense } from "react";
 import { User } from "./models/user.model";
 import { GetAuthenticatedUser } from "./networks/user.api";
 import Loader from "./components/Loader";
+import type { RootState } from "./app/store";
+import { useSelector, useDispatch } from "react-redux";
+import { getAuthenticatedUser } from "./features/userSlice";
 const LogIn = lazy(() => import("./pages/LogIn"));
 const SignUp = lazy(() => import("./pages/SignUp"));
 const Home = lazy(() => import("./pages/Home"));
 const LogInHome = lazy(() => import("./pages/LogInHome"));
 
 const App = () => {
-  const [logInUser, setLogInUser] = useState<User | null>(null);
+  const { logInUser } = useSelector((state: RootState) => state.user);
   const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
   useEffect(() => {
     const getAuthentication = async () => {
       try {
         setLoading(true);
         const user = await GetAuthenticatedUser();
-        setLogInUser(user);
+        dispatch(getAuthenticatedUser(user));
         setLoading(false);
       } catch (error) {
         setLoading(false);
@@ -29,7 +34,7 @@ const App = () => {
 
   return (
     <>
-      <Navbar logInUser={logInUser} />
+      <Navbar />
       <Suspense
         fallback={
           <div className="h-screen w-full bg-black/40 z-50 flex justify-center items-center">
@@ -46,11 +51,19 @@ const App = () => {
             <Route path="/" element={logInUser ? <LogInHome /> : <Home />} />
             <Route
               path="/login"
-              element={<LogIn onLogIn={(user) => setLogInUser(user)} />}
+              element={
+                <LogIn
+                  onLogIn={(user) => dispatch(getAuthenticatedUser(user))}
+                />
+              }
             />
             <Route
               path="/signup"
-              element={<SignUp onSignUp={(user) => setLogInUser(user)} />}
+              element={
+                <SignUp
+                  onSignUp={(user) => dispatch(getAuthenticatedUser(user))}
+                />
+              }
             />
           </Routes>
         )}
