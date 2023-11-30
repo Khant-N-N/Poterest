@@ -5,6 +5,8 @@ import UserModel from "../models/user.model";
 import mongoose from "mongoose";
 
 interface userBody {
+  _id?: string;
+  avatar?: string;
   username?: string;
   email?: string;
   password?: string;
@@ -98,6 +100,36 @@ export const GetTargetUser: RequestHandler = async (req, res, next) => {
 
     if (!user) throw createHttpError(404, "User does not exist.");
     res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+interface UpdateParams {
+  id: string;
+}
+
+export const UpdateUser: RequestHandler = async (req, res, next) => {
+  const userId = req.params.id;
+  try {
+    if (!mongoose.isValidObjectId(userId))
+      throw createHttpError(400, "Invalid User ID");
+    const user = await UserModel.findById(userId);
+    if (!user) throw createHttpError(404, "User does not exist.");
+
+    const updateUser = await UserModel.findByIdAndUpdate(
+      userId,
+      {
+        $set: {
+          username: req.body.username,
+          email: req.body.email,
+          avatar: req.body.avatar,
+        },
+      },
+      { new: true }
+    );
+
+    res.status(201).json(updateUser);
   } catch (error) {
     next(error);
   }
