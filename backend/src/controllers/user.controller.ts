@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
 import UserModel from "../models/user.model";
+import mongoose from "mongoose";
 
 interface userBody {
   username?: string;
@@ -85,4 +86,19 @@ export const SignIn: RequestHandler<
 
 export const LogOut: RequestHandler = async (req, res, next) => {
   req.session.destroy((error) => (error ? next(error) : res.sendStatus(200)));
+};
+
+export const GetTargetUser: RequestHandler = async (req, res, next) => {
+  const userId = req.params.id;
+  try {
+    if (!mongoose.isValidObjectId(userId))
+      throw createHttpError(400, "Invalid User ID");
+
+    const user = await UserModel.findById(userId).exec();
+
+    if (!user) throw createHttpError(404, "User does not exist.");
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
 };

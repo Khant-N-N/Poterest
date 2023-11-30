@@ -142,9 +142,11 @@ const SignUp = ({ onSignUp }: SignUpProps) => {
             Continue with google <FcGoogle className="text-[30px]" />
           </button>
         </form>
-        <p className="text-center mt-6">
-          Already a member? <Link to="/login">Log in</Link>
-        </p>
+        <Link to="/login">
+          <p className="text-center mt-6 hover:underline">
+            Already a member? Log in
+          </p>
+        </Link>
       </div>
     </section>
   );

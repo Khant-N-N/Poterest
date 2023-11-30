@@ -26,7 +26,7 @@ const App = () => {
   return (
     <>
       <Navbar />
-      <MobileNav />
+      {logInUser && <MobileNav />}
       <Suspense
         fallback={
           <div className="h-screen w-full bg-black/40 z-50 flex justify-center items-center">

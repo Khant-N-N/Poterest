@@ -6,6 +6,11 @@ export const GetAuthenticatedUser = async (): Promise<User> => {
   return response.data;
 };
 
+export const GetTargetUser = async (id: string): Promise<User> => {
+  const response = await axios.get(`/api/user/${id}`);
+  return response.data;
+};
+
 interface LogInInfo {
   email: string;
   password: string;
@@ -22,5 +27,10 @@ interface SignUpInfo {
 }
 export const SignUpUser = async (info: SignUpInfo): Promise<User> => {
   const response = await axios.post("/api/user/signup", info);
+  return response.data;
+};
+
+export const LogOutUser = async () => {
+  const response = await axios.post("/api/user/logout");
   return response.data;
 };

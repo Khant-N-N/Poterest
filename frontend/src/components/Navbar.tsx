@@ -10,8 +10,11 @@ const Navbar = () => {
   const { logInUser } = useSelector((state: RootState) => state.user);
 
   return (
-    <nav className="hidden md:flex z-30 w-full fixed top-0 items-center justify-between gap-2 px-8 lg:px-20 py-4 lg:text-[20px] font-semibold">
-      <Link to="/" className="text-[var(--pri-red)] text-[23px]">
+    <nav className="flex z-30 w-full fixed top-0 items-center justify-end md:justify-between gap-2 px-8 lg:px-20 py-4 lg:text-[20px] font-semibold">
+      <Link
+        to="/"
+        className="text-[var(--pri-red)] text-[23px] hidden md:flex gap-3"
+      >
         <TfiPinterest className="text-[30px]" /> {!logInUser && "Poterest"}
       </Link>
       {logInUser && (

@@ -61,7 +61,7 @@ const LogIn = ({ onLogIn }: logInProps) => {
           <Loader />
         </div>
       )}
-      <div className="max-w-[600px] my-4 relative h-screen bg-[var(--light)] rounded-3xl p-12 mx-auto">
+      <div className="max-w-[600px] my-4 relative h-full bg-[var(--light)] rounded-3xl p-12 mx-auto">
         <Link
           to="/"
           className="absolute right-4 top-4 hover:bg-[var(--sec-light)] p-2 rounded-full"
@@ -126,14 +126,16 @@ const LogIn = ({ onLogIn }: logInProps) => {
           <p className="text-center my-4">OR</p>
           <button
             type="button"
-            className="w-[90%] flex items-center justify-around py-4 px-8 bg-[var(--light)] hover:bg-[#f8faff] text-[22px] border-[3px] border-gray-400 rounded-full"
+            className="w-[90%] flex items-center justify-around py-4 px-8 bg-[var(--light)] hover:bg-[#f8faff] md:text-[22px] border-[3px] border-gray-400 rounded-full"
           >
             Continue with google <FcGoogle className="text-[30px]" />
           </button>
         </form>
-        <p className="text-center mt-6">
-          Not on Poterest yet? <Link to="/signup">Sign up</Link>
-        </p>
+        <Link to="/signup">
+          <p className="mt-6 hover:underline text-center">
+            Not on Poterest yet? Sign up
+          </p>
+        </Link>
       </div>
     </section>
   );
