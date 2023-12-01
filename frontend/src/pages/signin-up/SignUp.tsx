@@ -5,51 +5,49 @@ import { FaXmark } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { IoEye } from "react-icons/io5";
 import { IoEyeOff } from "react-icons/io5";
-import { LogInUser } from "../networks/user.api";
 import axios from "axios";
-import { User } from "../models/user.model";
-import Loader from "../components/Loader";
+import { SignUpUser } from "../../networks/user.api";
+import { User } from "../../models/user.model";
+import Loader from "../../components/Loader";
 
-interface logInProps {
-  onLogIn: (user: User) => void;
+interface SignUpProps {
+  onSignUp: (user: User) => void;
 }
-const LogIn = ({ onLogIn }: logInProps) => {
+const SignUp = ({ onSignUp }: SignUpProps) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
+    username: "",
     email: "",
     password: "",
   });
-  const [loading, setLoading] = useState(false);
-  const [logInError, setLogInError] = useState<string | null>(null);
+  const [signUpError, setSignUpError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  const handleLogIn: React.FormEventHandler<HTMLFormElement> = async (e) => {
+  const handleSignUp: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
-      setLogInError(null);
-      const logInUser = await LogInUser(formData);
-      onLogIn(logInUser);
+      setSignUpError(null);
+      const createdUser = await SignUpUser(formData);
+      onSignUp(createdUser);
       setLoading(false);
       navigate("/");
     } catch (error) {
-      setLoading(false);
       console.log(error);
+      setLoading(false);
       if (axios.isAxiosError(error)) {
-        if (error.response) {
-          setLogInError("invalid email or password");
-        } else {
-          setLogInError("An error occurred while making the request.");
-        }
+        setSignUpError(error.response?.data.error);
       } else {
-        setLogInError("An unexpected error occurred, Please try again.");
+        setSignUpError("Unexpected error occured, Please try again.");
       }
     }
   };
+
   return (
     <section className="absolute z-50 min-h-screen w-full">
       <div
@@ -57,11 +55,11 @@ const LogIn = ({ onLogIn }: logInProps) => {
         className="absolute h-full w-full bg-black/40"
       />
       {loading && (
-        <div className="absolute h-full w-full bg-black/40 z-50 flex justify-center items-center">
+        <div className="absolute h-screen w-full bg-black/40 z-50 flex justify-center items-center">
           <Loader />
         </div>
       )}
-      <div className="max-w-[600px] my-4 relative h-full bg-[var(--light)] rounded-3xl p-12 mx-auto">
+      <div className="max-w-[600px] relative my-4 h-full bg-[var(--light)] rounded-3xl p-12 mx-auto">
         <Link
           to="/"
           className="absolute right-4 top-4 hover:bg-[var(--sec-light)] p-2 rounded-full"
@@ -71,21 +69,36 @@ const LogIn = ({ onLogIn }: logInProps) => {
         <h2 className="text-center text-[30px] font-semibold">
           Welcome to Poterest
         </h2>
-        {logInError && <p className="text-center text-red-500">{logInError}</p>}
+        {signUpError && (
+          <p className="text-center text-red-500">{signUpError}</p>
+        )}
         <form
-          onSubmit={handleLogIn}
+          onSubmit={handleSignUp}
           className="flex flex-col items-center justify-center"
         >
           <label className="w-[90%] mt-3" htmlFor="email">
             Email*
           </label>
           <input
+            value={formData.email}
+            onChange={handleChange}
             className="w-[90%] py-4 px-5 rounded-3xl border-[3px] border-gray-400 focus:outline-none focus:ring focus:border-blue-500"
             type="email"
             id="email"
-            value={formData.email}
-            onChange={handleChange}
             placeholder="Email"
+            spellCheck={false}
+            required
+          />
+          <label className="w-[90%] mt-3" htmlFor="username">
+            Username*
+          </label>
+          <input
+            value={formData.username}
+            onChange={handleChange}
+            className="w-[90%] py-4 px-5 rounded-3xl border-[3px] border-gray-400 focus:outline-none focus:ring focus:border-blue-500"
+            type="text"
+            id="username"
+            placeholder="Username"
             spellCheck={false}
             required
           />
@@ -94,12 +107,12 @@ const LogIn = ({ onLogIn }: logInProps) => {
           </label>
           <div className="w-[90%] relative">
             <input
-              className="w-full py-4 px-5 rounded-3xl border-[3px] border-gray-400 focus:outline-none focus:ring focus:border-blue-500"
-              type={`${showPassword ? "text" : "password"}`}
               value={formData.password}
               onChange={handleChange}
+              className="w-full py-4 px-5 rounded-3xl border-[3px] border-gray-400 focus:outline-none focus:ring focus:border-blue-500"
+              type={`${showPassword ? "text" : "password"}`}
               id="password"
-              placeholder="Password"
+              placeholder="Create Your Password"
               required
             />
             {showPassword ? (
@@ -114,26 +127,24 @@ const LogIn = ({ onLogIn }: logInProps) => {
               />
             )}
           </div>
-          <span className="w-[90%] mt-3 hover:underline">
-            Forgot your password?
-          </span>
+
           <button
-            disabled={loading}
-            className="w-[90%] disabled:bg-[var(--sec-red)] py-4 px-8 mt-10 bg-[var(--pri-red)] text-[22px] hover:bg-[var(--sec-red)] text-white rounded-full"
+            type="submit"
+            className="w-[90%] py-4 px-8 mt-10 bg-[var(--pri-red)] text-[22px] hover:bg-[var(--sec-red)] text-white rounded-full"
           >
-            Log in
+            Sign Up
           </button>
           <p className="text-center my-4">OR</p>
           <button
             type="button"
-            className="w-[90%] flex items-center justify-around py-4 px-8 bg-[var(--light)] hover:bg-[#f8faff] md:text-[22px] border-[3px] border-gray-400 rounded-full"
+            className="w-[90%] flex items-center justify-around py-4 px-8 bg-[var(--light)] hover:bg-[#f8faff] text-[22px] border-[3px] border-gray-400 rounded-full"
           >
             Continue with google <FcGoogle className="text-[30px]" />
           </button>
         </form>
-        <Link to="/signup">
-          <p className="mt-6 hover:underline text-center">
-            Not on Poterest yet? Sign up
+        <Link to="/login">
+          <p className="text-center mt-6 hover:underline">
+            Already a member? Log in
           </p>
         </Link>
       </div>
@@ -141,4 +152,4 @@ const LogIn = ({ onLogIn }: logInProps) => {
   );
 };
 
-export default LogIn;
+export default SignUp;

@@ -7,16 +7,17 @@ import { useSelector, useDispatch } from "react-redux";
 import { getAuthenticatedUser } from "./features/userSlice";
 import PrivateRoute from "./components/PrivateRoute";
 import MobileNav from "./components/MobileNav";
-import UserProfilePublic from "./pages/UserProfilePublic";
+import UserProfilePublic from "./pages/profile/UserProfilePublic";
 
-const LogIn = lazy(() => import("./pages/LogIn"));
-const SignUp = lazy(() => import("./pages/SignUp"));
+const LogIn = lazy(() => import("./pages/signin-up/LogIn"));
+const SignUp = lazy(() => import("./pages/signin-up/SignUp"));
 const Home = lazy(() => import("./pages/Home"));
 const LogInHome = lazy(() => import("./pages/LogInHome"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const CreatePost = lazy(() => import("./pages/CreatePost"));
 const MessageInbox = lazy(() => import("./pages/MessageInbox"));
-const UserProfile = lazy(() => import("./pages/UserProfile"));
+const UserProfile = lazy(() => import("./pages/profile/UserProfile"));
+const ProfileEdit = lazy(() => import("./pages/profile/ProfileEdit"));
 
 const App = () => {
   const { logInUser } = useSelector((state: RootState) => state.user);
@@ -56,6 +57,7 @@ const App = () => {
             <Route path="/create" element={<CreatePost />} />
             <Route path="/message" element={<MessageInbox />} />
             <Route path="/profile" element={<UserProfile />} />
+            <Route path="/edit" element={<ProfileEdit />} />
           </Route>
         </Routes>
       </Suspense>

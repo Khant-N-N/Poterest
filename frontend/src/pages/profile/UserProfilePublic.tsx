@@ -1,13 +1,13 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import ProfilePosts from "../components/UserProfile/ProfilePosts";
+import ProfilePosts from "../../components/UserProfile/ProfilePosts";
 import { RiSettingsFill } from "react-icons/ri";
 import { HiShare } from "react-icons/hi";
-import { User } from "../models/user.model";
-import { GetAuthenticatedUser, GetTargetUser } from "../networks/user.api";
+import { User } from "../../models/user.model";
+import { GetAuthenticatedUser, GetTargetUser } from "../../networks/user.api";
 import axios from "axios";
-import Loader from "../components/Loader";
+import Loader from "../../components/Loader";
 
 const UserProfilePublic = () => {
   const [thisUser, setThisUser] = useState<User | null>(null);

@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
-import { RootState } from "../app/store";
+import { RootState } from "../../app/store";
 import { Link } from "react-router-dom";
-import ProfilePosts from "../components/UserProfile/ProfilePosts";
+import ProfilePosts from "../../components/UserProfile/ProfilePosts";
 import { RiSettingsFill } from "react-icons/ri";
 import { HiShare } from "react-icons/hi";
 

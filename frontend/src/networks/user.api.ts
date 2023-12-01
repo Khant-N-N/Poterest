@@ -34,3 +34,20 @@ export const LogOutUser = async () => {
   const response = await axios.post("/api/user/logout");
   return response.data;
 };
+
+interface UpdateProps {
+  id: string | undefined;
+  formData: {
+    avatar?: string;
+    username?: string;
+    email?: string;
+  };
+}
+
+export const UpdateUser = async ({
+  id,
+  formData,
+}: UpdateProps): Promise<User> => {
+  const response = await axios.post(`/api/user/update/${id}`, formData);
+  return response.data;
+};
