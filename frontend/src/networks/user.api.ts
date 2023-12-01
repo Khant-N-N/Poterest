@@ -51,3 +51,14 @@ export const UpdateUser = async ({
   const response = await axios.post(`/api/user/update/${id}`, formData);
   return response.data;
 };
+
+export const DeleteUser = async ({
+  password,
+}: {
+  password: string | undefined;
+}) => {
+  const response = await axios.post(`/api/user/delete/`, {
+    password: password,
+  });
+  return response.data;
+};

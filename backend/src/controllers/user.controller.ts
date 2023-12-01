@@ -134,3 +134,22 @@ export const UpdateUser: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+export const DeleteUser: RequestHandler = async (req, res, next) => {
+  const userId = req.session.userId;
+  const passwordRaw = req.body.password;
+  try {
+    if (!passwordRaw)
+      throw createHttpError(400, "Password is required to delete account.");
+    const getUser = await UserModel.findById(userId).select("+password").exec();
+    if (!getUser) throw createHttpError(404, "The user doesn't exist.");
+
+    const passwordMatch = bcrypt.compareSync(passwordRaw, getUser.password);
+    if (!passwordMatch) throw createHttpError(401, "Wrong Password.");
+
+    await UserModel.findByIdAndDelete(getUser._id);
+    req.session.destroy((error) => (error ? next(error) : res.sendStatus(200)));
+  } catch (error) {
+    next(error);
+  }
+};
