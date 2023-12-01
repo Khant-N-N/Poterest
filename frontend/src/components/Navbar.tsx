@@ -33,7 +33,7 @@ const Navbar = ({ setIsLogOut, setIsDelete }: NavProps) => {
   }, [displaySettingRef]);
 
   return (
-    <nav className="flex z-30 w-full fixed top-0 items-center justify-end md:justify-between gap-2 px-8 lg:px-20 py-4 lg:text-[20px] font-semibold">
+    <nav className="flex z-30 w-full fixed top-0 bg-[var(--light)] items-center justify-end md:justify-between gap-2 px-8 lg:px-20 py-3 lg:text-[20px] font-semibold">
       <Link
         to="/"
         className="text-[var(--pri-red)] text-[23px] hidden md:flex gap-3"
@@ -101,12 +101,12 @@ const Navbar = ({ setIsLogOut, setIsDelete }: NavProps) => {
               {showSetting && (
                 <div
                   ref={displaySettingRef}
-                  className="absolute right-0 text-[18px] font-normal flex flex-col gap-4 bg-[var(--sec-light)] py-5 px-4 shadow rounded top-9"
+                  className="absolute right-0 text-[18px] font-normal w-[200px] flex flex-col gap-4 bg-[var(--sec-light)] py-5 px-4 shadow rounded top-9"
                 >
                   <Link
                     to="/edit"
                     onClick={() => setShowSetting(false)}
-                    className="whitespace-nowrap"
+                    className="text-center hover:opacity-60"
                   >
                     Edit Profile
                   </Link>
@@ -116,6 +116,7 @@ const Navbar = ({ setIsLogOut, setIsDelete }: NavProps) => {
                       setIsLogOut(true);
                       setShowSetting(false);
                     }}
+                    className="hover:opacity-60"
                   >
                     Log Out
                   </button>
@@ -125,6 +126,7 @@ const Navbar = ({ setIsLogOut, setIsDelete }: NavProps) => {
                       setIsDelete(true);
                       setShowSetting(false);
                     }}
+                    className="hover:opacity-60"
                   >
                     Delete Account
                   </button>

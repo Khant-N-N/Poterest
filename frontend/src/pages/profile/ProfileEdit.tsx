@@ -13,6 +13,7 @@ import {
 import { app } from "../../firebase";
 import axios from "axios";
 import Loader from "../../components/Loader";
+import ChangePassword from "../../components/ChangePassword";
 
 const ProfileEdit = () => {
   const { logInUser } = useSelector((state: RootState) => state.user);
@@ -90,7 +91,7 @@ const ProfileEdit = () => {
           <Loader />
         </div>
       ) : (
-        <main className="flex flex-col items-center gap-4 justify-center min-h-screen mt-24">
+        <main className="flex flex-col items-center gap-4 justify-center min-h-screen mt-24 relative">
           <div className="flex flex-col items-center gap-3 relative">
             <input
               hidden
@@ -119,9 +120,10 @@ const ProfileEdit = () => {
             </button>
           </div>
           {editError && <p className="text-red-500 text-center">{editError}</p>}
+
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col items-center justify-center relative"
+            className="flex flex-col items-center justify-center"
           >
             <label className="w-[90%] mt-3" htmlFor="email">
               Change your Email
@@ -147,6 +149,9 @@ const ProfileEdit = () => {
               placeholder="Username"
               spellCheck={false}
             />
+            <div className="w-[90%]">
+              <ChangePassword />
+            </div>
             <button
               disabled={
                 formData?.email === logInUser?.email &&
@@ -160,7 +165,7 @@ const ProfileEdit = () => {
             </button>
             <Link
               to="/profile"
-              className="bg-[var(--sec-light)] hover:bg-gray-400 text-center w-[90%] mt-5 p-3 rounded-full"
+              className="bg-[var(--sec-light)] hover:bg-gray-300 text-center w-[90%] mt-5 p-3 rounded-full"
             >
               Cancel
             </Link>

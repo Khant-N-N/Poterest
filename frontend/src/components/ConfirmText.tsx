@@ -42,14 +42,17 @@ const ConfirmText = ({ onDisplay, isDisplay, text }: ConfirmProps) => {
       } h-full w-full absolute top-0 transition-all z-40 flex flex-col justify-center items-center`}
     >
       <div
-        onClick={() => onDisplay(false)}
+        onClick={() => {
+          onDisplay(false);
+          setError(null);
+        }}
         className="absolute h-full w-full z-10"
       />
       <div className="w-[270px] md:w-[330px] bg-[var(--sec-light)] gap-5 shadow-lg z-20 px-4 py-6 rounded-md flex flex-col justify-center items-center">
         <p className="text-center">
           Please Confirm to {text} {text === "Delete" && "Your account"}
         </p>
-        {text === "Delete" && (
+        {text === "Delete" && isDisplay && (
           <>
             <p className="text-[16px] text-yellow-700">
               *You will lose all your data and can't be restore
@@ -81,7 +84,10 @@ const ConfirmText = ({ onDisplay, isDisplay, text }: ConfirmProps) => {
         <div className="flex gap-4">
           <button
             type="button"
-            onClick={() => onDisplay(false)}
+            onClick={() => {
+              onDisplay(false);
+              setError(null);
+            }}
             className="hover:bg-gray-300 bg-gray-400 py-3 px-5 rounded-full"
           >
             Cancel
