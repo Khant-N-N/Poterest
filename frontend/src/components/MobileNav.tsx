@@ -10,7 +10,7 @@ const MobileNav = () => {
   const { logInUser } = useSelector((state: RootState) => state.user);
 
   return (
-    <nav className="fixed md:hidden bottom-0 w-full flex items-center justify-between bg-[var(--light)] px-5 py-2">
+    <nav className="fixed md:hidden bottom-0 w-full z-50 flex items-center justify-between bg-[var(--light)] px-5 py-2">
       <NavLink
         to="/"
         className={({ isActive }) =>

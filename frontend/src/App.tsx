@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState } from "react";
 import Loader from "./components/Loader";
 import type { RootState } from "./app/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -8,6 +8,7 @@ import { getAuthenticatedUser } from "./features/userSlice";
 import PrivateRoute from "./components/PrivateRoute";
 import MobileNav from "./components/MobileNav";
 import UserProfilePublic from "./pages/profile/UserProfilePublic";
+import ConfirmText from "./components/ConfirmText";
 
 const LogIn = lazy(() => import("./pages/signin-up/LogIn"));
 const SignUp = lazy(() => import("./pages/signin-up/SignUp"));
@@ -20,13 +21,15 @@ const UserProfile = lazy(() => import("./pages/profile/UserProfile"));
 const ProfileEdit = lazy(() => import("./pages/profile/ProfileEdit"));
 
 const App = () => {
+  const [isLogOut, setIsLogOut] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
   const { logInUser } = useSelector((state: RootState) => state.user);
 
   const dispatch = useDispatch();
 
   return (
     <>
-      <Navbar />
+      <Navbar setIsDelete={setIsDelete} setIsLogOut={setIsLogOut} />
       {logInUser && <MobileNav />}
       <Suspense
         fallback={
@@ -35,6 +38,18 @@ const App = () => {
           </div>
         }
       >
+        <ConfirmText
+          text="LogOut"
+          onDisplay={(boolean) => setIsLogOut(boolean)}
+          isDisplay={isLogOut}
+        />
+
+        <ConfirmText
+          text="Delete"
+          onDisplay={(boolean) => setIsDelete(boolean)}
+          isDisplay={isDelete}
+        />
+
         <Routes>
           <Route path="*" element={<NotFound />} />
           <Route path="/" element={logInUser ? <LogInHome /> : <Home />} />

@@ -5,9 +5,32 @@ import { FaChevronDown } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import SearchBox from "./SearchBox";
 import { RootState } from "../app/store";
+import { useEffect, useRef, useState } from "react";
 
-const Navbar = () => {
+interface NavProps {
+  setIsLogOut: (boolean: boolean) => void;
+  setIsDelete: (boolean: boolean) => void;
+}
+const Navbar = ({ setIsLogOut, setIsDelete }: NavProps) => {
+  const [showSetting, setShowSetting] = useState(false);
+
   const { logInUser } = useSelector((state: RootState) => state.user);
+  const displaySettingRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (
+        displaySettingRef.current &&
+        !displaySettingRef.current.contains(target)
+      ) {
+        setShowSetting(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [displaySettingRef]);
 
   return (
     <nav className="flex z-30 w-full fixed top-0 items-center justify-end md:justify-between gap-2 px-8 lg:px-20 py-4 lg:text-[20px] font-semibold">
@@ -70,7 +93,44 @@ const Navbar = () => {
                 className="w-full h-full object-cover rounded-full"
               />
             </NavLink>
-            <FaChevronDown />
+            <div className="relative">
+              <FaChevronDown
+                onClick={() => setShowSetting(!showSetting)}
+                className="cursor-pointer"
+              />
+              {showSetting && (
+                <div
+                  ref={displaySettingRef}
+                  className="absolute right-0 text-[18px] font-normal flex flex-col gap-4 bg-[var(--sec-light)] py-5 px-4 shadow rounded top-9"
+                >
+                  <Link
+                    to="/edit"
+                    onClick={() => setShowSetting(false)}
+                    className="whitespace-nowrap"
+                  >
+                    Edit Profile
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsLogOut(true);
+                      setShowSetting(false);
+                    }}
+                  >
+                    Log Out
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsDelete(true);
+                      setShowSetting(false);
+                    }}
+                  >
+                    Delete Account
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       ) : (

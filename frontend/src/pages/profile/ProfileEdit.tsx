@@ -62,6 +62,11 @@ const ProfileEdit = () => {
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     try {
+      if (
+        logInUser?.email === "knn3@knn3.com" &&
+        formData?.email !== "knn3@knn3.com"
+      )
+        return setEditError("This demo account's email can't be changed");
       setEditError(null);
       setLoading(true);
       const parameters = { id: logInUser?._id, formData };
@@ -119,7 +124,7 @@ const ProfileEdit = () => {
             className="flex flex-col items-center justify-center relative"
           >
             <label className="w-[90%] mt-3" htmlFor="email">
-              Email
+              Change your Email
             </label>
             <input
               className="w-[90%] py-4 px-5 rounded-3xl border-[3px] border-gray-400 focus:outline-none focus:ring focus:border-blue-500"
@@ -131,7 +136,7 @@ const ProfileEdit = () => {
               spellCheck={false}
             />
             <label className="w-[90%] mt-3" htmlFor="username">
-              Username
+              Change Username
             </label>
             <input
               className="w-[90%] py-4 px-5 rounded-3xl border-[3px] border-gray-400 focus:outline-none focus:ring focus:border-blue-500"
@@ -143,8 +148,13 @@ const ProfileEdit = () => {
               spellCheck={false}
             />
             <button
+              disabled={
+                formData?.email === logInUser?.email &&
+                formData?.avatar === logInUser?.avatar &&
+                formData?.username === logInUser?.username
+              }
               type="submit"
-              className="bg-[var(--pri-red)] hover:bg-[var(--sec-red)] text-white w-[90%] mt-5 p-3 rounded-full"
+              className="bg-[var(--pri-red)] hover:bg-[var(--sec-red)] text-white w-[90%] mt-5 p-3 rounded-full disabled:opacity-40"
             >
               Save
             </button>
