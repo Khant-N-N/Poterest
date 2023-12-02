@@ -87,6 +87,7 @@ const SignUp = ({ onSignUp }: SignUpProps) => {
             id="email"
             placeholder="Email"
             spellCheck={false}
+            autoFocus
             required
           />
           <label className="w-[90%] mt-3" htmlFor="username">

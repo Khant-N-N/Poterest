@@ -88,6 +88,7 @@ const LogIn = ({ onLogIn }: logInProps) => {
             placeholder="Email"
             spellCheck={false}
             required
+            autoFocus
           />
           <label className="w-[90%] mt-3" htmlFor="password">
             Password*
