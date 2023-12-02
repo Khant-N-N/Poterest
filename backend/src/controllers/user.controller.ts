@@ -105,10 +105,6 @@ export const GetTargetUser: RequestHandler = async (req, res, next) => {
   }
 };
 
-interface UpdateParams {
-  id: string;
-}
-
 export const UpdateUser: RequestHandler = async (req, res, next) => {
   const userId = req.params.id;
   try {
@@ -149,6 +145,36 @@ export const DeleteUser: RequestHandler = async (req, res, next) => {
 
     await UserModel.findByIdAndDelete(getUser._id);
     req.session.destroy((error) => (error ? next(error) : res.sendStatus(200)));
+  } catch (error) {
+    next(error);
+  }
+};
+
+interface PasswordProps {
+  currentPassword: string;
+  newPassword: string;
+}
+export const ChangePassword: RequestHandler<
+  unknown,
+  unknown,
+  PasswordProps,
+  unknown
+> = async (req, res, next) => {
+  const currentPassword = req.body.currentPassword;
+  const newPassword = req.body.newPassword;
+  try {
+    if (!currentPassword || !newPassword)
+      throw createHttpError(400, "Parameters are missing.");
+    const user = await UserModel.findById(req.session.userId)
+      .select("+password")
+      .exec();
+    if (!user) throw createHttpError(404, "User does not exist.");
+    const passwordMatch = bcrypt.compareSync(currentPassword, user.password);
+    if (!passwordMatch) throw createHttpError(401, "Invalid Password");
+    const hashedNewPassword = bcrypt.hashSync(newPassword, 10);
+    user.password = hashedNewPassword;
+    await user.save();
+    res.sendStatus(201);
   } catch (error) {
     next(error);
   }

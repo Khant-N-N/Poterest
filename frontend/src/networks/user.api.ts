@@ -62,3 +62,12 @@ export const DeleteUser = async ({
   });
   return response.data;
 };
+
+interface PasswordProps {
+  currentPassword: string;
+  newPassword: string;
+}
+export const ChangeNewPassword = async (formData: PasswordProps) => {
+  const response = await axios.post("/api/user/change-password", formData);
+  return response.data;
+};

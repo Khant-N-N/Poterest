@@ -8,6 +8,7 @@ router.get("/", requireAuth, UserControllers.GetAuthenicatedUser);
 router.get("/:id", requireAuth, UserControllers.GetTargetUser);
 router.post("/update/:id", requireAuth, UserControllers.UpdateUser);
 router.post("/delete", requireAuth, UserControllers.DeleteUser);
+router.post("/change-password", requireAuth, UserControllers.ChangePassword);
 router.post("/signup", UserControllers.SignUp);
 router.post("/signin", UserControllers.SignIn);
 router.post("/logout", UserControllers.LogOut);

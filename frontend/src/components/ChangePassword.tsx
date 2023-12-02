@@ -1,6 +1,8 @@
-import { useState } from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import { ChangeNewPassword } from "../networks/user.api";
 
 const initialForm = {
   currentPassword: "",
@@ -10,7 +12,32 @@ const ChangePassword = () => {
   const [changePassword, setChangePassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
+  const [pwLoading, setpwLoading] = useState(false);
+  const [completeMsg, setCompleteMsg] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState(initialForm);
+
+  const handleChangePassword = async () => {
+    if (formData.currentPassword === "" || formData.newPassword === "")
+      return setError("Please enter password");
+    try {
+      setError(null);
+      setpwLoading(true);
+      await ChangeNewPassword(formData);
+      setpwLoading(false);
+      setCompleteMsg("Password Changed");
+      setTimeout(() => {
+        setChangePassword(false);
+        setCompleteMsg("");
+        setFormData(initialForm);
+      }, 2000);
+    } catch (error) {
+      setpwLoading(false);
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data.error);
+      }
+    }
+  };
 
   return (
     <>
@@ -26,14 +53,19 @@ const ChangePassword = () => {
             onClick={() => {
               setChangePassword(false);
               setFormData(initialForm);
+              setError(null);
             }}
             className="absolute w-screen h-screen bg-black/40 bottom-0 right-0 -z-10"
           />
           <div
             className={`flex flex-col items-center justify-center h-[500px] bg-[var(--light)] w-[290px] md:w-[350px] border-4 rounded p-6`}
           >
+            {completeMsg !== "" && (
+              <p className="text-green-500 text-[17px]">{completeMsg}</p>
+            )}
+            {error && <p className="text-red-500 text-[17px]">{error}</p>}
             <label className="w-[90%] mt-3" htmlFor="password">
-              Current Password
+              Current Password*
             </label>
             <div className="w-[90%] relative">
               <input
@@ -46,6 +78,7 @@ const ChangePassword = () => {
                 id="password"
                 placeholder="Current Password"
                 required
+                autoFocus
               />
               {showPassword ? (
                 <IoEyeOff
@@ -60,7 +93,7 @@ const ChangePassword = () => {
               )}
             </div>
             <label className="w-[90%] mt-5" htmlFor="newpassword">
-              New Password
+              New Password*
             </label>
             <div className="w-[90%] relative">
               <input
@@ -90,15 +123,19 @@ const ChangePassword = () => {
               Forget Password? Reset Here
             </Link>
             <button
-              type="submit"
-              className="bg-[var(--pri-red)] hover:bg-[var(--sec-red)] text-white w-[90%] mt-5 p-3 rounded-full"
+              disabled={pwLoading}
+              type="button"
+              onClick={handleChangePassword}
+              className="bg-[var(--pri-red)] hover:bg-[var(--sec-red)] disabled:opacity-50 text-white w-[90%] mt-5 p-3 rounded-full"
             >
-              Confirm
+              {pwLoading ? "Changing" : "Confirm"}
             </button>
             <button
+              type="button"
               onClick={() => {
                 setChangePassword(false);
                 setFormData(initialForm);
+                setError(null);
               }}
               className="bg-[var(--sec-light)] hover:bg-gray-400 text-center w-[90%] mt-5 p-3 rounded-full"
             >
