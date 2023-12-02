@@ -91,7 +91,7 @@ const ProfileEdit = () => {
           <Loader />
         </div>
       ) : (
-        <main className="flex flex-col items-center gap-4 justify-center min-h-screen mt-24 relative">
+        <main className="flex flex-col items-center gap-4 justify-center min-h-screen mt-24 mb-16 relative">
           <div className="flex flex-col items-center gap-3 relative">
             <input
               hidden
