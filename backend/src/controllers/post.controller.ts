@@ -5,9 +5,12 @@ import PostModel from "../models/post.model";
 interface PostType {
   imgUrl?: string;
   caption?: string;
+  description?: string;
+  topic?: Array<string>;
   uploaderId?: string;
-  comments?: Array<string>;
-  reacts?: Array<string>;
+  allowComment?: boolean;
+  comments?: Array<object>;
+  reacts?: Array<{ reactorId: string; react: string }>;
 }
 export const CreatePost: RequestHandler<unknown, unknown, PostType> = async (
   req,
@@ -15,7 +18,7 @@ export const CreatePost: RequestHandler<unknown, unknown, PostType> = async (
   next
 ) => {
   const imgUrl = req.body.imgUrl;
-  const uploaderId = req.body.uploaderId;
+  const uploaderId = req.session.userId;
   try {
     if (!imgUrl) throw createHttpError(400, "imgUrl is required");
     if (!uploaderId) throw createHttpError(400, "uploaderId is required");
@@ -24,6 +27,9 @@ export const CreatePost: RequestHandler<unknown, unknown, PostType> = async (
       imgUrl: imgUrl,
       uploaderId: uploaderId,
       caption: req.body.caption,
+      description: req.body.description,
+      topic: req.body.topic,
+      allowComment: req.body.allowComment,
       comments: req.body.comments,
       reacts: req.body.reacts,
     });

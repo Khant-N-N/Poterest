@@ -9,7 +9,7 @@ const UserProfile = () => {
   const { logInUser } = useSelector((state: RootState) => state.user);
   return (
     <main className="flex flex-col items-center gap-4 justify-center min-h-screen mt-24">
-      <div className="fixed top-0 w-full flex justify-end items-center gap-6 py-3 px-4 md:hidden bg-[var(--light)]">
+      <div className="fixed z-50 top-0 w-full flex justify-end items-center gap-6 py-3 px-4 md:hidden bg-[var(--light)]">
         <HiShare className="text-[25px] cursor-pointer" />
         <RiSettingsFill className="text-[25px] cursor-pointer" />
       </div>
