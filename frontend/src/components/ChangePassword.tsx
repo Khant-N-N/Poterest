@@ -58,7 +58,7 @@ const ChangePassword = () => {
             className="absolute w-screen h-screen bg-black/40 bottom-0 right-0 -z-10"
           />
           <div
-            className={`flex flex-col items-center justify-center h-[500px] bg-[var(--light)] w-[290px] md:w-[350px] border-4 rounded p-6`}
+            className={`flex flex-col items-center text-[17px] md:text-[19px] justify-center h-[500px] bg-[var(--light)] w-[290px] md:w-[350px] border-4 rounded p-6`}
           >
             {completeMsg !== "" && (
               <p className="text-green-500 text-[17px]">{completeMsg}</p>
