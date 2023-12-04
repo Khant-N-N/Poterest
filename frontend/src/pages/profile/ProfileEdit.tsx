@@ -32,8 +32,9 @@ const ProfileEdit = () => {
 
   useEffect(() => {
     const handleProfileUpload = (imgFile: File) => {
+      const folderPath = "profiles";
       const storage = getStorage(app);
-      const fileName = new Date().getTime() + imgFile.name;
+      const fileName = `${folderPath}/${new Date().getTime() + imgFile.name}`;
       const storageRef = ref(storage, fileName);
       const uploadTask = uploadBytesResumable(storageRef, imgFile);
       uploadTask.on(
