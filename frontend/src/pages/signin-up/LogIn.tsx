@@ -54,7 +54,7 @@ const LogIn = ({ onLogIn }: logInProps) => {
     <section className="absolute z-50 min-h-screen w-full">
       <div
         onClick={() => navigate("/")}
-        className="absolute h-full w-full bg-black/40"
+        className="absolute h-full w-full bg-black/40 blur-lg"
       />
       {loading && (
         <div className="absolute h-full w-full bg-black/40 z-50 flex justify-center items-center">
