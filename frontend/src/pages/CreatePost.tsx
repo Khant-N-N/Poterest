@@ -1,15 +1,30 @@
 import React, { useState, useRef } from "react";
-import {
-  FaArrowUpFromBracket,
-  FaChevronDown,
-  FaChevronRight,
-} from "react-icons/fa6";
+import { FaArrowUpFromBracket, FaChevronDown } from "react-icons/fa6";
 import { TbExchange } from "react-icons/tb";
 import "../styles/checkbox.css";
+import TagTopics from "../components/CreatePost/TagTopics";
+
+interface IntialCreateFormType {
+  imgUrl: string;
+  caption: string;
+  description: string;
+  topic: string[];
+  allowComment: boolean;
+}
+
+const intialCreateForm: IntialCreateFormType = {
+  imgUrl: "",
+  caption: "",
+  description: "",
+  topic: [],
+  allowComment: true,
+};
 
 const CreatePost = () => {
+  const [createForm, setCreateForm] = useState(intialCreateForm);
   const [selectedImg, setSelectedImg] = useState<string | null>(null);
   const [moreOptions, setMoreOptions] = useState(false);
+  console.log(createForm);
 
   const uploadRef = useRef<HTMLInputElement>(null);
   const handleChangeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,9 +97,7 @@ const CreatePost = () => {
                 placeholder="Add a description to your post"
               />
             </div>
-            <div className="border-b border-black mb-3 cursor-pointer py-3 flex items-center justify-between">
-              Tag Topics <FaChevronRight />
-            </div>
+            <TagTopics />
             <div className="border-b border-black mb-3">
               <div
                 onClick={() => setMoreOptions(!moreOptions)}
@@ -95,7 +108,16 @@ const CreatePost = () => {
               {moreOptions && (
                 <div className="flex items-center gap-5 my-4">
                   <label className="switch">
-                    <input type="checkbox" defaultChecked />
+                    <input
+                      type="checkbox"
+                      checked={createForm.allowComment}
+                      onChange={() =>
+                        setCreateForm({
+                          ...createForm,
+                          allowComment: !createForm.allowComment,
+                        })
+                      }
+                    />
                     <span className="slider" />
                   </label>
                   <span>Allow comments</span>
