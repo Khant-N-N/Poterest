@@ -1,17 +1,26 @@
 import { FaChevronRight } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
-import { useEffect, useState, useRef } from "react";
+import { useState, useEffect } from "react";
 import Topic from "./Topic";
 import SearchTopics from "./SearchTopics";
 
 const topics = ["Comedy", "music", "anime", "games", "girls", "boys", "cars"];
 
 type SelectedTopicsType = typeof topics;
-const TagTopics = () => {
+
+interface TagProps {
+  setTopic: (topic: SelectedTopicsType) => void;
+}
+
+const TagTopics = ({ setTopic }: TagProps) => {
   const [selectedTopics, setSelectedTopics] = useState<SelectedTopicsType>([]);
   const [isSelectTopic, setIsSelectTopic] = useState(false);
   const [searchedTopics, setSearchedTopics] =
     useState<SelectedTopicsType>(topics);
+
+  useEffect(() => {
+    setTopic(selectedTopics);
+  }, [selectedTopics]);
 
   const handleSearch = (keyword: string) => {
     setSearchedTopics(

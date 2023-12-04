@@ -3,16 +3,18 @@ import { FaArrowUpFromBracket, FaChevronDown } from "react-icons/fa6";
 import { TbExchange } from "react-icons/tb";
 import "../styles/checkbox.css";
 import TagTopics from "../components/CreatePost/TagTopics";
+import { CreateAPost, IntialCreateFormProp } from "../networks/post.api";
+import axios from "axios";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../firebase";
+import { useNavigate } from "react-router-dom";
 
-interface IntialCreateFormType {
-  imgUrl: string;
-  caption: string;
-  description: string;
-  topic: string[];
-  allowComment: boolean;
-}
-
-const intialCreateForm: IntialCreateFormType = {
+const intialCreateForm: IntialCreateFormProp = {
   imgUrl: "",
   caption: "",
   description: "",
@@ -24,17 +26,64 @@ const CreatePost = () => {
   const [createForm, setCreateForm] = useState(intialCreateForm);
   const [selectedImg, setSelectedImg] = useState<string | null>(null);
   const [moreOptions, setMoreOptions] = useState(false);
-  console.log(createForm);
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const uploadRef = useRef<HTMLInputElement>(null);
   const handleChangeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    file && setUploadFile(file);
     if (file) {
       const read = new FileReader();
       read.onload = () => {
         setSelectedImg(read.result as string);
       };
       read.readAsDataURL(file);
+    }
+  };
+
+  const handleImageUpload = async (file: File) => {
+    const fileName = new Date().getTime() + file.name;
+    const storage = getStorage(app);
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      },
+      (error) => {
+        console.log(error);
+        setError(error.message);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) =>
+          setCreateForm({ ...createForm, imgUrl: downloadUrl })
+        );
+      }
+    );
+  };
+
+  const handleSubmit: React.FormEventHandler = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      uploadFile && (await handleImageUpload(uploadFile));
+      createForm.imgUrl !== "" && (await CreateAPost(createForm));
+      setLoading(false);
+      navigate("/profile");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data.error);
+      } else {
+        setError("Something went wrong, please try again.");
+      }
+      setLoading(false);
     }
   };
 
@@ -76,13 +125,15 @@ const CreatePost = () => {
               className="w-full h-auto object-contain"
             />
           </div>
-          <form className="w-full md:w-1/2 mt-12 px-6">
+          <form onSubmit={handleSubmit} className="w-full md:w-1/2 mt-12 px-6">
             <div className="border-b border-black mb-3">
               <label htmlFor="title">Title</label>
               <input
                 type="text"
-                name=""
                 id="title"
+                onChange={(e) =>
+                  setCreateForm({ ...createForm, caption: e.target.value })
+                }
                 className="border-none outline-none block px-3 py-5 w-full bg-transparent caret-[var(--pri-red)]"
                 placeholder="Tell everyone what your post is about"
               />
@@ -91,13 +142,19 @@ const CreatePost = () => {
               <label htmlFor="title">Description</label>
               <input
                 type="text"
-                name=""
                 id="description"
+                onChange={(e) =>
+                  setCreateForm({ ...createForm, description: e.target.value })
+                }
                 className="border-none outline-none block px-3 py-5 w-full bg-transparent caret-[var(--pri-red)]"
                 placeholder="Add a description to your post"
               />
             </div>
-            <TagTopics />
+            <TagTopics
+              setTopic={(topic) =>
+                setCreateForm({ ...createForm, topic: topic })
+              }
+            />
             <div className="border-b border-black mb-3">
               <div
                 onClick={() => setMoreOptions(!moreOptions)}
@@ -124,6 +181,9 @@ const CreatePost = () => {
                 </div>
               )}
             </div>
+            {error && (
+              <p className="text-center text-red-500 text-[17px]">{error}</p>
+            )}
             <div className="flex items-center justify-end gap-3 px-4 my-6">
               <button
                 onClick={() => setSelectedImg(null)}
@@ -133,10 +193,11 @@ const CreatePost = () => {
                 Cancel
               </button>
               <button
-                type="button"
+                disabled={loading}
+                type="submit"
                 className="py-3 px-5 rounded-full bg-[var(--pri-red)] hover:bg-[var(--sec-red)] text-white self-end"
               >
-                Create
+                {loading ? "Creating" : "Create"}
               </button>
             </div>
           </form>

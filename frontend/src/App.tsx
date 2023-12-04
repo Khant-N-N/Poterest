@@ -51,9 +51,9 @@ const App = () => {
         />
 
         <Routes>
-          <Route path="*" element={<NotFound />} />
           <Route path="/" element={logInUser ? <LogInHome /> : <Home />} />
           <Route path="/profile/:userId" element={<UserProfilePublic />} />
+          <Route path="*" element={<NotFound />} />
           <Route
             path="/login"
             element={
