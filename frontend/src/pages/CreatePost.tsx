@@ -60,10 +60,24 @@ const CreatePost = () => {
         console.log(error);
         setError(error.message);
       },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) =>
-          setCreateForm({ ...createForm, imgUrl: downloadUrl })
-        );
+      async () => {
+        try {
+          const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+
+          const updatedForm = { ...createForm, imgUrl: downloadUrl };
+          setCreateForm(updatedForm);
+
+          await CreateAPost(updatedForm);
+          setLoading(false);
+          navigate("/profile");
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            setError(error.response?.data.error);
+          } else {
+            setError("Something went wrong, please try again.");
+          }
+          setLoading(false);
+        }
       }
     );
   };
@@ -74,16 +88,10 @@ const CreatePost = () => {
     setError(null);
     try {
       uploadFile && (await handleImageUpload(uploadFile));
-      createForm.imgUrl !== "" && (await CreateAPost(createForm));
-      setLoading(false);
-      navigate("/profile");
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data.error);
-      } else {
-        setError("Something went wrong, please try again.");
-      }
+      console.error("Error during image upload:", error);
       setLoading(false);
+      return;
     }
   };
 
