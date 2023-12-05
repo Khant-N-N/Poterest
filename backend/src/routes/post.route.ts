@@ -4,5 +4,6 @@ import * as postControllers from "../controllers/post.controller";
 const router = express.Router();
 
 router.post("/upload", postControllers.CreatePost);
+router.get("/get-user-posts", postControllers.GetUserPosts);
 
 export default router;

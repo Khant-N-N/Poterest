@@ -1,6 +1,8 @@
 import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import PostModel from "../models/post.model";
+import mongoose from "mongoose";
+import UserModel from "../models/user.model";
 
 interface PostType {
   imgUrl?: string;
@@ -36,6 +38,20 @@ export const CreatePost: RequestHandler<unknown, unknown, PostType> = async (
     await post.save();
 
     res.status(201).json(post);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const GetUserPosts: RequestHandler = async (req, res, next) => {
+  const userId = req.session.userId;
+
+  try {
+    if (!mongoose.isValidObjectId(userId))
+      throw createHttpError(400, "Invalid User Id");
+
+    const Posts = await PostModel.find({ uploaderId: userId });
+    res.status(200).json(Posts);
   } catch (error) {
     next(error);
   }
