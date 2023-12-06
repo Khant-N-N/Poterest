@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Post as PostType } from "../../models/post.model";
 import Post from "../CreatePost/Post";
@@ -12,26 +12,27 @@ const breakpointColumnsObj = {
   550: 2,
 };
 
-const CreatedPosts = () => {
+const CreatedPost = () => {
   const [createdPosts, setCreatedPosts] = useState<PostType[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  useEffect(() => {
-    const getMyCreatedPost = async () => {
-      setLoading(true);
-      setError(false);
-      try {
-        const data = await GetUserPosts();
-        setCreatedPosts(data);
-        setLoading(false);
-      } catch {
-        setError(true);
-        setLoading(false);
-      }
-    };
-    getMyCreatedPost();
+  const getMyCreatedPost = useCallback(async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const data = await GetUserPosts();
+      setCreatedPosts(data);
+      setLoading(false);
+    } catch {
+      setError(true);
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    getMyCreatedPost();
+  }, [getMyCreatedPost]);
 
   return (
     <div
@@ -66,4 +67,4 @@ const CreatedPosts = () => {
   );
 };
 
-export default CreatedPosts;
+export const CreatedPosts = React.memo(CreatedPost);

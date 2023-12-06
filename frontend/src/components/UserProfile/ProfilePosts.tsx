@@ -1,17 +1,17 @@
 import { useState } from "react";
-import CreatedPosts from "./CreatedPosts";
+import { CreatedPosts } from "./CreatedPosts";
 import SavedPosts from "./SavedPosts";
 
 const ProfilePosts = () => {
   const [isCreated, setIsCreated] = useState(true);
   return (
     <div className="mt-14 flex flex-col items-center">
-      <div className="flex gap-12 xs:text-[23px]">
+      <div className="flex gap-12 md:text-[23px]">
         <p
           onClick={() => setIsCreated(true)}
           className={`${
             isCreated
-              ? "border-b-4 border-black rounded pb-3 cursor-pointer"
+              ? "border-b-4 border-black rounded px-3 pb-3 cursor-pointer"
               : " cursor-pointer"
           }`}
         >
@@ -22,7 +22,7 @@ const ProfilePosts = () => {
           className={`${
             isCreated
               ? " cursor-pointer"
-              : "border-b-4 border-black rounded pb-3 cursor-pointer"
+              : "border-b-4 border-black rounded px-3 pb-3 cursor-pointer"
           }`}
         >
           Saved
