@@ -15,3 +15,8 @@ export const CreateAPost = async (
   const response = await axios.post("/api/posts/upload", formData);
   return response.data;
 };
+
+export const GetUserPosts = async (): Promise<Post[]> => {
+  const response = await axios.get("/api/posts/get-user-posts");
+  return response.data;
+};
