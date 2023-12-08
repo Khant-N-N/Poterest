@@ -56,3 +56,23 @@ export const GetUserPosts: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+export const UpdatePost: RequestHandler = async (req, res, next) => {
+  const postId = req.params.id;
+  try {
+    if (!mongoose.isValidObjectId(postId))
+      throw createHttpError(400, "Invalid Post Id");
+
+    const post = await PostModel.findById(postId);
+    if (!post) throw createHttpError(404, "Post doesn't exist.");
+    if (req.body.description) post.description = req.body.description;
+    if (req.body.caption) post.caption = req.body.caption;
+    if (req.body.allowComment) post.allowComment = req.body.allowComment;
+    if (req.body.topic) post.topic = req.body.topic;
+    await post.save();
+
+    res.status(201).json(post);
+  } catch (error) {
+    next(error);
+  }
+};
