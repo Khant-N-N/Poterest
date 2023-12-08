@@ -11,7 +11,7 @@ import { addCreatedPosts } from "../../features/postSlice";
 const breakpointColumnsObj = {
   default: 4,
   1200: 3,
-  550: 2,
+  850: 2,
 };
 
 const CreatedPost = () => {
