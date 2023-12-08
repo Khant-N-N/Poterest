@@ -118,7 +118,13 @@ const EditPost = () => {
           Cancel
         </Link>
         <button
-          disabled={loading}
+          disabled={
+            loading ||
+            (editForm?.caption === editPost?.caption &&
+              editForm?.description === editPost?.description &&
+              editForm?.topic === editPost?.topic &&
+              editForm?.allowComment === editPost?.allowComment)
+          }
           className="py-3 px-5 rounded-full bg-[var(--pri-red)] hover:bg-[var(--sec-red)] disabled:opacity-50 text-white self-end"
         >
           {loading ? "Saving " : "Save"}
