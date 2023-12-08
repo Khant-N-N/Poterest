@@ -1,8 +1,7 @@
 import { RequestHandler } from "express";
 import createHttpError from "http-errors";
-import PostModel from "../models/post.model";
 import mongoose from "mongoose";
-import UserModel from "../models/user.model";
+import PostModel from "../models/post.model";
 
 interface PostType {
   imgUrl?: string;

@@ -10,6 +10,9 @@ interface userBody {
   username?: string;
   email?: string;
   password?: string;
+  saved?: Array<object>;
+  followers?: string[];
+  following?: string[];
 }
 
 export const GetAuthenicatedUser: RequestHandler = async (req, res, next) => {
