@@ -7,6 +7,7 @@ import { Post } from "../../models/post.model";
 import { User } from "../../models/user.model";
 import { GetTargetUser } from "../../networks/user.api";
 import { ClickFunc, HoverFunc } from "../PostFunctions";
+import { Link } from "react-router-dom";
 
 interface PostProps {
   post: Post;
@@ -33,9 +34,13 @@ const Post = ({ post }: PostProps) => {
     if (logInUser?._id !== post.uploaderId) getPostOwner();
   }, [getPostOwner, logInUser?._id, post.uploaderId]);
   return (
-    <div className={`overflow-hidden mb-7 relative`}>
+    <div className={`mb-7 relative`}>
       <div className="relative overflow-hidden rounded-lg md:rounded-2xl">
-        <HoverFunc userId={post.uploaderId} postId={post._id} />
+        <HoverFunc
+          imgUrl={post.imgUrl}
+          userId={post.uploaderId}
+          postId={post._id}
+        />
         <img
           id="image"
           loading="lazy"
@@ -48,17 +53,21 @@ const Post = ({ post }: PostProps) => {
         {profileLoading ? (
           <FaCircleUser className="text-[20px]" />
         ) : (
-          <div className="flex gap-2 items-center cursor-pointer hover:underline">
+          <Link
+            to={`/profile/${post.uploaderId}`}
+            className="flex gap-2 items-center cursor-pointer hover:underline"
+          >
             <img
               src={postOwner?.avatar || logInUser?.avatar}
               alt="owner"
               className="w-6 h-6 rounded-full object-cover"
             />
             <span>{postOwner?.username || logInUser?.username}</span>
-          </div>
+          </Link>
         )}
         {isShowMenu && (
           <ClickFunc
+            imgUrl={post.imgUrl}
             onClick={() => setIsShowMenu(false)}
             userId={post.uploaderId}
             postId={post._id}
