@@ -5,14 +5,17 @@ import { HiShare } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
 import { useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface IdProps {
   userId: string;
   onClick?: (boolean: boolean) => void;
+  postId: string;
 }
 
-const HoverFunc = ({ userId }: IdProps) => {
+const HoverFunc = ({ userId, postId }: IdProps) => {
   const { logInUser } = useSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
 
   return (
     <div className="absolute transition-opacity opacity-0 hover:opacity-100 cursor-zoom-in bg-black/60 p-2 flex flex-col items-end justify-between w-full h-full">
@@ -21,7 +24,10 @@ const HoverFunc = ({ userId }: IdProps) => {
       </button>
       <div className="flex gap-3">
         {logInUser?._id === userId && (
-          <div className="bg-[var(--light)] cursor-pointer p-2 rounded-full opacity-70 hover:opacity-100">
+          <div
+            onClick={() => navigate(`/edit-post/${postId}`)}
+            className="bg-[var(--light)] cursor-pointer p-2 rounded-full opacity-70 hover:opacity-100"
+          >
             <FaPen />
           </div>
         )}
@@ -33,9 +39,10 @@ const HoverFunc = ({ userId }: IdProps) => {
   );
 };
 
-const ClickFunc = ({ userId, onClick }: IdProps) => {
+const ClickFunc = ({ userId, onClick, postId }: IdProps) => {
   const { logInUser } = useSelector((state: RootState) => state.user);
   const showMenuRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -59,7 +66,10 @@ const ClickFunc = ({ userId, onClick }: IdProps) => {
         <FaRegHeart /> Save
       </button>
       {logInUser?._id === userId && (
-        <div className="cursor-pointer p-2 flex gap-2 items-center opacity-70 hover:opacity-100">
+        <div
+          onClick={() => navigate(`/edit-post/${postId}`)}
+          className="cursor-pointer p-2 flex gap-2 items-center opacity-70 hover:opacity-100"
+        >
           <FaPen /> Edit
         </div>
       )}

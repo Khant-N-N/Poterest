@@ -1,9 +1,9 @@
 import React, { useState, useRef } from "react";
 import { FaArrowUpFromBracket, FaChevronDown } from "react-icons/fa6";
 import { TbExchange } from "react-icons/tb";
-import "../styles/checkbox.css";
-import TagTopics from "../components/CreatePost/TagTopics";
-import { CreateAPost, IntialCreateFormProp } from "../networks/post.api";
+import "../../styles/checkbox.css";
+import TagTopics from "../../components/CreatePost/TagTopics";
+import { CreateAPost, IntialCreateFormProp } from "../../networks/post.api";
 import axios from "axios";
 import {
   getDownloadURL,
@@ -11,7 +11,7 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import { app } from "../firebase";
+import { app } from "../../firebase";
 import { useNavigate } from "react-router-dom";
 
 const intialCreateForm: IntialCreateFormProp = {

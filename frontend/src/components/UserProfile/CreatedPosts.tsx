@@ -5,6 +5,8 @@ import Post from "../CreatePost/Post";
 import { GetUserPosts } from "../../networks/post.api";
 import Loader from "../Loader";
 import Masonry from "react-masonry-css";
+import { useDispatch } from "react-redux";
+import { addCreatedPosts } from "../../features/postSlice";
 
 const breakpointColumnsObj = {
   default: 4,
@@ -16,6 +18,7 @@ const CreatedPost = () => {
   const [createdPosts, setCreatedPosts] = useState<PostType[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const dispatch = useDispatch();
 
   const getMyCreatedPost = useCallback(async () => {
     setLoading(true);
@@ -23,6 +26,7 @@ const CreatedPost = () => {
     try {
       const data = await GetUserPosts();
       setCreatedPosts(data);
+      dispatch(addCreatedPosts(data));
       setLoading(false);
     } catch {
       setError(true);

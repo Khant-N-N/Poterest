@@ -10,14 +10,19 @@ type SelectedTopicsType = typeof topics;
 
 interface TagProps {
   setTopic: (topic: SelectedTopicsType) => void;
+  autoSelectTopic?: SelectedTopicsType;
 }
 
-const TagTopics = ({ setTopic }: TagProps) => {
+const TagTopics = ({ setTopic, autoSelectTopic }: TagProps) => {
   const [selectedTopics, setSelectedTopics] = useState<SelectedTopicsType>([]);
   const [isSelectTopic, setIsSelectTopic] = useState(false);
   const [searchedTopics, setSearchedTopics] =
     useState<SelectedTopicsType>(topics);
 
+  useEffect(
+    () => autoSelectTopic && setSelectedTopics(autoSelectTopic),
+    [autoSelectTopic]
+  );
   useEffect(() => {
     setTopic(selectedTopics);
   }, [selectedTopics]);

@@ -15,7 +15,8 @@ const SignUp = lazy(() => import("./pages/signin-up/SignUp"));
 const Home = lazy(() => import("./pages/Home"));
 const LogInHome = lazy(() => import("./pages/LogInHome"));
 const NotFound = lazy(() => import("./pages/NotFound"));
-const CreatePost = lazy(() => import("./pages/CreatePost"));
+const CreatePost = lazy(() => import("./pages/posts/CreatePost"));
+const EditPost = lazy(() => import("./pages/posts/EditPost"));
 const MessageInbox = lazy(() => import("./pages/MessageInbox"));
 const UserProfile = lazy(() => import("./pages/profile/UserProfile"));
 const ProfileEdit = lazy(() => import("./pages/profile/ProfileEdit"));
@@ -70,6 +71,7 @@ const App = () => {
           />
           <Route element={<PrivateRoute />}>
             <Route path="/create" element={<CreatePost />} />
+            <Route path="/edit-post/:id" element={<EditPost />} />
             <Route path="/message" element={<MessageInbox />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/edit" element={<ProfileEdit />} />

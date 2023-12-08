@@ -28,6 +28,7 @@ const SearchTopics = ({ onSearch }: SearchTopicsProps) => {
           onClick={() => {
             setSearchKeyword("");
             onSearch("");
+            setIsType(false);
           }}
           className="absolute right-3 top-3 cursor-pointer"
         />

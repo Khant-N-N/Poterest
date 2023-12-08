@@ -35,7 +35,7 @@ const Post = ({ post }: PostProps) => {
   return (
     <div className={`overflow-hidden mb-7 relative`}>
       <div className="relative overflow-hidden rounded-lg md:rounded-2xl">
-        <HoverFunc userId={post.uploaderId} />
+        <HoverFunc userId={post.uploaderId} postId={post._id} />
         <img
           id="image"
           loading="lazy"
@@ -61,6 +61,7 @@ const Post = ({ post }: PostProps) => {
           <ClickFunc
             onClick={() => setIsShowMenu(false)}
             userId={post.uploaderId}
+            postId={post._id}
           />
         )}
         <BiDotsVerticalRounded
