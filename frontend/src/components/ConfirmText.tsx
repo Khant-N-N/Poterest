@@ -39,7 +39,7 @@ const ConfirmText = ({ onDisplay, isDisplay, text }: ConfirmProps) => {
     <div
       className={`${
         isDisplay ? "scale-100" : "scale-0"
-      } h-full w-full absolute top-0 transition-all z-40 flex flex-col justify-center items-center`}
+      } h-full w-full fixed top-0 transition-all z-40 flex flex-col justify-center items-center`}
     >
       <div
         onClick={() => {
