@@ -176,7 +176,8 @@ const ClickFunc = ({ onClick, post }: IdProps) => {
         disabled={saveLoading}
         className="p-2 flex gap-2 items-center opacity-70 hover:opacity-100 text-[var(--pri-red)]"
       >
-        {saveLoading && "Saving"}{" "}
+        {saveLoading && isSaved && "Unsaving"}
+        {saveLoading && !isSaved && "Saving"}
         {!saveLoading && isSaved && (
           <>
             <FaHeart /> Unsave
