@@ -34,7 +34,7 @@ const UserProfile = () => {
         </Link>
       </div>
 
-      <ProfilePosts />
+      <ProfilePosts Save={true} />
     </main>
   );
 };
