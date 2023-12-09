@@ -73,7 +73,15 @@ const App = () => {
             <Route path="/create" element={<CreatePost />} />
             <Route path="/edit-post/:id" element={<EditPost />} />
             <Route path="/message" element={<MessageInbox />} />
-            <Route path="/profile" element={<UserProfile />} />
+            <Route
+              path="/profile"
+              element={
+                <UserProfile
+                  setIsDelete={setIsDelete}
+                  setIsLogOut={setIsLogOut}
+                />
+              }
+            />
             <Route path="/edit" element={<ProfileEdit />} />
           </Route>
         </Routes>

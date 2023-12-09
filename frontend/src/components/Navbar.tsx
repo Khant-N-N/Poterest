@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import SearchBox from "./SearchBox";
 import { RootState } from "../app/store";
 import { useEffect, useRef, useState } from "react";
+import { FaXmark } from "react-icons/fa6";
 
 interface NavProps {
   setIsLogOut: (boolean: boolean) => void;
@@ -101,8 +102,12 @@ const Navbar = ({ setIsLogOut, setIsDelete }: NavProps) => {
               {showSetting && (
                 <div
                   ref={displaySettingRef}
-                  className="absolute right-0 text-[18px] font-normal w-[200px] flex flex-col gap-4 bg-[var(--sec-light)] py-5 px-4 shadow rounded top-9"
+                  className="absolute right-0 top-0 text-[18px] font-normal w-[200px] flex flex-col gap-4 bg-[var(--sec-light)] pt-4 pb-8 px-4 shadow rounded"
                 >
+                  <FaXmark
+                    onClick={() => setShowSetting(false)}
+                    className="self-end cursor-pointer hover:opacity-70"
+                  />
                   <Link
                     to="/edit"
                     onClick={() => setShowSetting(false)}
