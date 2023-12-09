@@ -10,7 +10,7 @@ interface userBody {
   username?: string;
   email?: string;
   password?: string;
-  saved?: Array<object>;
+  saved?: string[];
   followers?: string[];
   following?: string[];
 }

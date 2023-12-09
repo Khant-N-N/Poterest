@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import mongoose from "mongoose";
 import PostModel from "../models/post.model";
+import UserModel from "../models/user.model";
 
 interface PostType {
   imgUrl?: string;
@@ -56,6 +57,17 @@ export const GetUserPosts: RequestHandler = async (req, res, next) => {
   }
 };
 
+export const GetPublicPosts: RequestHandler = async (req, res, next) => {
+  try {
+    if (!req.session.userId)
+      throw createHttpError(401, "Please Sign In first.");
+    const posts = await PostModel.find();
+    res.status(200).json(posts);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const UpdatePost: RequestHandler = async (req, res, next) => {
   const postId = req.params.id;
   try {
@@ -71,6 +83,74 @@ export const UpdatePost: RequestHandler = async (req, res, next) => {
     await post.save();
 
     res.status(201).json(post);
+  } catch (error) {
+    next(error);
+  }
+};
+export const DeletePost: RequestHandler = async (req, res, next) => {
+  const postId = req.params.id;
+  try {
+    if (!mongoose.isValidObjectId(postId))
+      throw createHttpError(400, "Invalid Post Id");
+
+    const post = await PostModel.findByIdAndDelete(postId);
+    if (!post) throw createHttpError(404, "Post doesn't exist.");
+
+    res.status(200);
+  } catch (error) {
+    next(error);
+  }
+};
+
+interface Removed {
+  postId: string;
+}
+
+interface Saved {
+  saved: PostType;
+}
+
+export const SavedPost: RequestHandler<unknown, unknown, Saved> = async (
+  req,
+  res,
+  next
+) => {
+  const userId = req.session.userId;
+  const addedSavedPost = req.body.saved;
+
+  try {
+    if (!mongoose.isValidObjectId(userId))
+      throw createHttpError(400, "Invalid user Id");
+
+    const user = await UserModel.findById(userId);
+    if (!user) throw createHttpError(404, "User doesn't exist.");
+
+    user.saved = [...user.saved, addedSavedPost];
+    await user.save();
+    res.status(201).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const RemoveSavedPost: RequestHandler<
+  unknown,
+  unknown,
+  Removed
+> = async (req, res, next) => {
+  const userId = req.session.userId;
+  const removeSavedPost = req.body.postId;
+
+  try {
+    if (!mongoose.isValidObjectId(userId))
+      throw createHttpError(400, "Invalid user Id");
+
+    const user = await UserModel.findById(userId);
+    if (!user) throw createHttpError(404, "User doesn't exist.");
+
+    user.saved = user.saved.filter((post) => post._id !== removeSavedPost);
+    await user.save();
+    res.status(201).json(user);
   } catch (error) {
     next(error);
   }
