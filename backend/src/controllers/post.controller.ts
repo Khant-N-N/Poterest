@@ -56,6 +56,19 @@ export const GetUserPosts: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+export const GetTargetUserPosts: RequestHandler = async (req, res, next) => {
+  const userId = req.params.id;
+
+  try {
+    if (!mongoose.isValidObjectId(userId))
+      throw createHttpError(400, "Invalid User Id");
+
+    const Posts = await PostModel.find({ uploaderId: userId });
+    res.status(200).json(Posts);
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const GetPublicPosts: RequestHandler = async (req, res, next) => {
   try {
