@@ -1,12 +1,13 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
-import { Post as PostType } from "../../models/post.model";
-import Post from "../CreatePost/Post";
-import { GetUserPosts } from "../../networks/post.api";
-import Loader from "../Loader";
+import React, { useCallback, useEffect, useState } from "react";
 import Masonry from "react-masonry-css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useParams } from "react-router-dom";
 import { addCreatedPosts } from "../../features/postSlice";
+import { Post as PostType } from "../../models/post.model";
+import { GetTargetUserPosts, GetUserPosts } from "../../networks/post.api";
+import Post from "../CreatePost/Post";
+import Loader from "../Loader";
+import { RootState } from "../../app/store";
 
 const breakpointColumnsObj = {
   default: 4,
@@ -15,10 +16,31 @@ const breakpointColumnsObj = {
 };
 
 const CreatedPost = () => {
+  const { userId } = useParams();
+  const { logInUser } = useSelector((state: RootState) => state.user);
   const [createdPosts, setCreatedPosts] = useState<PostType[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const dispatch = useDispatch();
+
+  const userCreatedPost = useCallback(async () => {
+    setLoading(true);
+    setError(false);
+    try {
+      const data = userId && (await GetTargetUserPosts(userId));
+      if (data) {
+        setCreatedPosts(data);
+        setLoading(false);
+        return;
+      } else {
+        setError(true);
+        setLoading(false);
+      }
+    } catch {
+      setError(true);
+      setLoading(false);
+    }
+  }, [userId]);
 
   const getMyCreatedPost = useCallback(async () => {
     setLoading(true);
@@ -32,11 +54,13 @@ const CreatedPost = () => {
       setError(true);
       setLoading(false);
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
-    getMyCreatedPost();
-  }, [getMyCreatedPost]);
+    (userId && userId === logInUser?._id) || !userId
+      ? getMyCreatedPost()
+      : userCreatedPost();
+  }, [getMyCreatedPost, logInUser?._id, userCreatedPost, userId]);
 
   return (
     <div

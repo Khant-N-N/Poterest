@@ -2,7 +2,11 @@ import { useState } from "react";
 import { CreatedPosts } from "./CreatedPosts";
 import SavedPosts from "./SavedPosts";
 
-const ProfilePosts = () => {
+interface ProfileProp {
+  Save?: boolean;
+}
+
+const ProfilePosts = ({ Save }: ProfileProp) => {
   const [isCreated, setIsCreated] = useState(true);
   return (
     <div className="mt-14 flex flex-col items-center">
@@ -17,16 +21,18 @@ const ProfilePosts = () => {
         >
           Created
         </p>
-        <p
-          onClick={() => setIsCreated(false)}
-          className={`${
-            isCreated
-              ? " cursor-pointer"
-              : "border-b-4 border-black rounded px-3 pb-3 cursor-pointer"
-          }`}
-        >
-          Saved
-        </p>
+        {Save && (
+          <p
+            onClick={() => setIsCreated(false)}
+            className={`${
+              isCreated
+                ? " cursor-pointer"
+                : "border-b-4 border-black rounded px-3 pb-3 cursor-pointer"
+            }`}
+          >
+            Saved
+          </p>
+        )}
       </div>
 
       {isCreated ? <CreatedPosts /> : <SavedPosts />}

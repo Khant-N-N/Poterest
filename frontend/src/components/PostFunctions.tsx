@@ -1,44 +1,92 @@
 import { MdDownload } from "react-icons/md";
-import { FaPen, FaTrash } from "react-icons/fa6";
-import { FaRegHeart } from "react-icons/fa";
+import { FaPen, FaTrash, FaRegHeart, FaHeart } from "react-icons/fa6";
 import { HiShare } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { saveAs } from "file-saver";
+import { useDispatch } from "react-redux";
+import { getAuthenticatedUser } from "../features/userSlice";
+import { Post } from "../models/post.model";
+import axios from "axios";
+import { AddSavedPost, RemoveSavedPost } from "../networks/post.api";
 
 interface IdProps {
-  userId: string;
+  post: Post;
   onClick?: (boolean: boolean) => void;
-  postId: string;
-  imgUrl: string;
 }
 
-const HoverFunc = ({ userId, postId, imgUrl }: IdProps) => {
+const HoverFunc = ({ post }: IdProps) => {
   const { logInUser } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [isSaved, setIsSaved] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
-  const handleDownload = () => {
-    saveAs(imgUrl, `poterest-${postId}.jpg`);
+  // const handleDownload = () => {
+  //   saveAs(imgUrl, `poterest-${postId}.jpg`);
+  // };
+
+  useEffect(() => {
+    if (logInUser)
+      setIsSaved(
+        logInUser.saved.some((savedPost) => savedPost._id === post._id)
+      );
+  }, [logInUser, post._id]);
+
+  const handleSavePost = async () => {
+    try {
+      setSaveLoading(true);
+      setSaveError(null);
+      const data = await AddSavedPost(post);
+      dispatch(getAuthenticatedUser(data));
+      setIsSaved(true);
+      setSaveLoading(false);
+    } catch (error) {
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        setSaveError(error.response?.data.error);
+      }
+    }
+  };
+  const handleRemoveSave = async () => {
+    try {
+      setSaveLoading(true);
+      setSaveError(null);
+      const data = await RemoveSavedPost(post._id);
+      dispatch(getAuthenticatedUser(data));
+      setIsSaved(false);
+      setSaveLoading(false);
+    } catch (error) {
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        setSaveError(error.response?.data.error);
+      }
+    }
   };
 
   return (
     <div className="absolute group transition-opacity opacity-0 hover:opacity-100 text-[11px] xs:text-[18px] cursor-zoom-in bg-black/60 p-2 hidden md:flex flex-col items-end justify-between w-full h-full">
-      <button className="p-1 text-[12px] md:text-[18px] xs:p-3 hidden group-hover:block rounded-3xl text-white bg-[var(--pri-red)] hover:bg-[var(--sec-red)]">
-        Save
+      <button
+        disabled={saveLoading}
+        onClick={isSaved ? handleRemoveSave : handleSavePost}
+        className="p-1 text-[12px] md:text-[18px] xs:p-3 hidden group-hover:block rounded-3xl text-white bg-[var(--pri-red)] hover:bg-[var(--sec-red)] disabled:opacity-50"
+      >
+        {isSaved ? "UnSaved" : "Save"}
       </button>
       <div className="hidden gap-3 group-hover:flex justify-between w-full">
-        {logInUser?._id === userId && (
+        {logInUser?._id === post.uploaderId && (
           <div className="flex gap-3">
             <div
-              onClick={() => navigate(`/edit-post/${postId}`)}
+              onClick={() => navigate(`/edit-post/${post._id}`)}
               className="bg-[var(--light)] cursor-pointer p-1 xs:p-2 rounded-full opacity-70 hover:opacity-100"
             >
               <FaPen />
             </div>
             <div
-              onClick={() => navigate(`/edit-post/${postId}`)}
+              onClick={() => navigate(`/edit-post/${post._id}`)}
               className="bg-[var(--light)] cursor-pointer p-1 xs:p-2 rounded-full opacity-70 hover:opacity-100"
             >
               <FaTrash />
@@ -47,7 +95,7 @@ const HoverFunc = ({ userId, postId, imgUrl }: IdProps) => {
         )}
         <a
           download
-          href={imgUrl}
+          href={post.imgUrl}
           target="_blank"
           className="bg-[var(--light)] cursor-pointer p-1 xs:p-2 rounded-full opacity-70 hover:opacity-100"
         >
@@ -58,8 +106,12 @@ const HoverFunc = ({ userId, postId, imgUrl }: IdProps) => {
   );
 };
 
-const ClickFunc = ({ userId, onClick, postId, imgUrl }: IdProps) => {
+const ClickFunc = ({ onClick, post }: IdProps) => {
   const { logInUser } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
+  const [isSaved, setIsSaved] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const showMenuRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
 
@@ -76,18 +128,70 @@ const ClickFunc = ({ userId, onClick, postId, imgUrl }: IdProps) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (logInUser)
+      setIsSaved(
+        logInUser.saved.some((savedPost) => savedPost._id === post._id)
+      );
+  }, [logInUser, post._id]);
+
+  const handleSavePost = async () => {
+    try {
+      setSaveLoading(true);
+      setSaveError(null);
+      const data = await AddSavedPost(post);
+      dispatch(getAuthenticatedUser(data));
+      setIsSaved(true);
+      setSaveLoading(false);
+    } catch (error) {
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        setSaveError(error.response?.data.error);
+      }
+    }
+  };
+  const handleRemoveSave = async () => {
+    try {
+      setSaveLoading(true);
+      setSaveError(null);
+      const data = await RemoveSavedPost(post._id);
+      dispatch(getAuthenticatedUser(data));
+      setIsSaved(false);
+      setSaveLoading(false);
+    } catch (error) {
+      console.log(error);
+      if (axios.isAxiosError(error)) {
+        setSaveError(error.response?.data.error);
+      }
+    }
+  };
+
   return (
     <div
       ref={showMenuRef}
       className="absolute bg-white rounded-md px-1 flex bottom-1 right-1 flex-col"
     >
-      <button className="p-2 flex gap-2 items-center opacity-70 hover:opacity-100">
-        <FaRegHeart /> Save
+      <button
+        onClick={isSaved ? handleRemoveSave : handleSavePost}
+        disabled={saveLoading}
+        className="p-2 flex gap-2 items-center opacity-70 hover:opacity-100 text-[var(--pri-red)]"
+      >
+        {saveLoading && "Saving"}{" "}
+        {!saveLoading && isSaved && (
+          <>
+            <FaHeart /> Unsave
+          </>
+        )}
+        {!saveLoading && !isSaved && (
+          <>
+            <FaRegHeart /> Save
+          </>
+        )}
       </button>
-      {logInUser?._id === userId && (
+      {logInUser?._id === post.uploaderId && (
         <>
           <div
-            onClick={() => navigate(`/edit-post/${postId}`)}
+            onClick={() => navigate(`/edit-post/${post._id}`)}
             className="cursor-pointer p-2 flex gap-2 items-center opacity-70 hover:opacity-100"
           >
             <FaPen /> Edit
@@ -97,9 +201,14 @@ const ClickFunc = ({ userId, onClick, postId, imgUrl }: IdProps) => {
           </div>
         </>
       )}
-      <div className="cursor-pointer p-2 flex gap-2 items-center opacity-70 hover:opacity-100">
+      <a
+        download
+        href={post.imgUrl}
+        target="_blank"
+        className="cursor-pointer p-2 flex gap-2 items-center opacity-70 hover:opacity-100"
+      >
         <MdDownload /> Download
-      </div>
+      </a>
       <div className="cursor-pointer p-2 flex gap-2 items-center opacity-70 hover:opacity-100">
         <HiShare /> Share
       </div>

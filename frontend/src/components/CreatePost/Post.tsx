@@ -36,11 +36,7 @@ const Post = ({ post }: PostProps) => {
   return (
     <div className={`mb-7 relative`}>
       <div className="relative overflow-hidden rounded-lg md:rounded-2xl">
-        <HoverFunc
-          imgUrl={post.imgUrl}
-          userId={post.uploaderId}
-          postId={post._id}
-        />
+        <HoverFunc post={post} />
         <img
           id="image"
           loading="lazy"
@@ -54,7 +50,11 @@ const Post = ({ post }: PostProps) => {
           <FaCircleUser className="text-[20px]" />
         ) : (
           <Link
-            to={`/profile/${post.uploaderId}`}
+            to={
+              logInUser?._id === post.uploaderId
+                ? "/profile"
+                : `/profile/${post.uploaderId}`
+            }
             className="flex gap-2 items-center cursor-pointer hover:underline"
           >
             <img
@@ -66,12 +66,7 @@ const Post = ({ post }: PostProps) => {
           </Link>
         )}
         {isShowMenu && (
-          <ClickFunc
-            imgUrl={post.imgUrl}
-            onClick={() => setIsShowMenu(false)}
-            userId={post.uploaderId}
-            postId={post._id}
-          />
+          <ClickFunc onClick={() => setIsShowMenu(false)} post={post} />
         )}
         <BiDotsVerticalRounded
           onClick={() => setIsShowMenu(!isShowMenu)}
