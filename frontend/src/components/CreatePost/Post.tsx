@@ -1,13 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { FaCircleUser } from "react-icons/fa6";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { RootState } from "../../app/store";
 import { Post } from "../../models/post.model";
 import { User } from "../../models/user.model";
 import { GetTargetUser } from "../../networks/user.api";
 import { ClickFunc, HoverFunc } from "../PostFunctions";
-import { Link } from "react-router-dom";
+import DeletePostConfirm from "./DeletePostConfirm";
 
 interface PostProps {
   post: Post;
@@ -17,6 +18,7 @@ const Post = ({ post }: PostProps) => {
   const [postOwner, setPostOwner] = useState<User | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [isShowMenu, setIsShowMenu] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const getPostOwner = useCallback(async () => {
     try {
@@ -35,8 +37,14 @@ const Post = ({ post }: PostProps) => {
   }, [getPostOwner, logInUser?._id, post.uploaderId]);
   return (
     <div className={`mb-7 relative`}>
+      <DeletePostConfirm
+        onDisplay={(boolean) => setConfirmDelete(boolean)}
+        isDisplay={confirmDelete}
+        text="delete"
+        postId={post._id}
+      />
       <div className="relative overflow-hidden rounded-lg md:rounded-2xl">
-        <HoverFunc post={post} />
+        <HoverFunc post={post} deletePost={() => setConfirmDelete(true)} />
         <img
           id="image"
           loading="lazy"
@@ -45,7 +53,7 @@ const Post = ({ post }: PostProps) => {
           className="w-full h-auto rounded-lg md:rounded-2xl object-contain block"
         />
       </div>
-      <div className="flex justify-between items-center mt-1 md:mt-3 w-full text-[14px] md:text-[16px] tracking-normal ps-2">
+      <div className="flex relative justify-between items-center mt-1 md:mt-3 w-full text-[14px] md:text-[16px] tracking-normal ps-2">
         {profileLoading ? (
           <FaCircleUser className="text-[20px]" />
         ) : (
@@ -66,7 +74,11 @@ const Post = ({ post }: PostProps) => {
           </Link>
         )}
         {isShowMenu && (
-          <ClickFunc onClick={() => setIsShowMenu(false)} post={post} />
+          <ClickFunc
+            onClick={() => setIsShowMenu(false)}
+            post={post}
+            deletePost={() => setConfirmDelete(true)}
+          />
         )}
         <BiDotsVerticalRounded
           onClick={() => setIsShowMenu(!isShowMenu)}

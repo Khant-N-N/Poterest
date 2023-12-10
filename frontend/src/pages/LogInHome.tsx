@@ -8,7 +8,7 @@ import { GetPublicAllPosts } from "../networks/post.api";
 import Masonry from "react-masonry-css";
 import PostCard from "../components/CreatePost/Post";
 
-export const breakpointColumnsObj = {
+const breakpointColumnsObj = {
   default: 4,
   1200: 3,
   850: 2,
@@ -50,7 +50,7 @@ const LogInHome = () => {
   }, [checkStillAuthenticated]);
 
   return (
-    <div className="mt-20 md:mt-28 mb-20 md:mb-10">
+    <div className="mt-20 md:mt-28 mb-20 md:mb-10 relative">
       {loading ? (
         <div className="h-screen w-full bg-black/40 z-50 flex justify-center items-center">
           <Loader />

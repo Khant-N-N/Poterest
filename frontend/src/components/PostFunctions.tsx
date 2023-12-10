@@ -15,9 +15,10 @@ import { AddSavedPost, RemoveSavedPost } from "../networks/post.api";
 interface IdProps {
   post: Post;
   onClick?: (boolean: boolean) => void;
+  deletePost: (boolean: boolean) => void;
 }
 
-const HoverFunc = ({ post }: IdProps) => {
+const HoverFunc = ({ post, deletePost }: IdProps) => {
   const { logInUser } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -85,8 +86,9 @@ const HoverFunc = ({ post }: IdProps) => {
             >
               <FaPen />
             </div>
+
             <div
-              onClick={() => navigate(`/edit-post/${post._id}`)}
+              onClick={() => deletePost(true)}
               className="bg-[var(--light)] cursor-pointer p-1 xs:p-2 rounded-full opacity-70 hover:opacity-100"
             >
               <FaTrash />
@@ -106,7 +108,7 @@ const HoverFunc = ({ post }: IdProps) => {
   );
 };
 
-const ClickFunc = ({ onClick, post }: IdProps) => {
+const ClickFunc = ({ onClick, post, deletePost }: IdProps) => {
   const { logInUser } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   const [isSaved, setIsSaved] = useState(false);
@@ -197,7 +199,10 @@ const ClickFunc = ({ onClick, post }: IdProps) => {
           >
             <FaPen /> Edit
           </div>
-          <div className="cursor-pointer p-2 flex gap-2 items-center opacity-70 hover:opacity-100">
+          <div
+            onClick={() => deletePost(true)}
+            className="cursor-pointer p-2 flex gap-2 items-center opacity-70 hover:opacity-100"
+          >
             <FaTrash /> Delete
           </div>
         </>

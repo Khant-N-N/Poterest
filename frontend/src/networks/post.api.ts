@@ -50,3 +50,8 @@ export const RemoveSavedPost = async (postId: string) => {
   });
   return response.data;
 };
+
+export const DeletePost = async (postId: string) => {
+  const response = await axios.delete(`/api/posts/delete-post/${postId}`);
+  return response.data;
+};
