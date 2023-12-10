@@ -171,7 +171,7 @@ const ClickFunc = ({ onClick, post, deletePost }: IdProps) => {
   return (
     <div
       ref={showMenuRef}
-      className="absolute bg-white rounded-md px-1 flex bottom-1 right-1 flex-col"
+      className="absolute bg-white rounded-md px-1 flex bottom-1 right-1 flex-col h-[130px] md:h-auto overflow-y-scroll"
     >
       <button
         onClick={isSaved ? handleRemoveSave : handleSavePost}
