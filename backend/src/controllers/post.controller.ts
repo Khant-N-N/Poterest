@@ -69,6 +69,20 @@ export const GetTargetUserPosts: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+export const GetTargetPost: RequestHandler = async (req, res, next) => {
+  const postId = req.params.id;
+
+  try {
+    if (!mongoose.isValidObjectId(postId))
+      throw createHttpError(400, "Invalid User Id");
+
+    const Posts = await PostModel.findById(postId);
+    if (!Posts) throw createHttpError(404, "Post doesn't exist.");
+    res.status(200).json(Posts);
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const GetPublicPosts: RequestHandler = async (req, res, next) => {
   const limit = parseInt(req.query.limit as string, 10) || 15;

@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.post("/upload", postControllers.CreatePost);
 router.get("/get-user-posts", postControllers.GetUserPosts);
+router.get("/get-post-details/:id", postControllers.GetTargetPost);
 router.get("/get-target-user-posts/:id", postControllers.GetTargetUserPosts);
 router.get("/get-public-posts", postControllers.GetPublicPosts);
 router.post("/update-post/:id", postControllers.UpdatePost);
