@@ -34,7 +34,7 @@ const Navbar = ({ setIsLogOut, setIsDelete }: NavProps) => {
   }, [displaySettingRef]);
 
   return (
-    <nav className="flex z-30 w-full fixed top-0 bg-[var(--light)] items-center justify-end md:justify-between gap-2 px-8 lg:px-20 py-3 lg:text-[20px] font-semibold">
+    <nav className="flex z-50 w-full fixed top-0 bg-[var(--light)] items-center justify-end md:justify-between gap-2 px-8 lg:px-20 py-3 lg:text-[20px] font-semibold">
       <Link
         to="/"
         className="text-[var(--pri-red)] text-[23px] hidden md:flex gap-3"
