@@ -105,11 +105,11 @@ export const DeletePost: RequestHandler = async (req, res, next) => {
   try {
     if (!mongoose.isValidObjectId(postId))
       throw createHttpError(400, "Invalid Post Id");
-
-    const post = await PostModel.findByIdAndDelete(postId);
+    const post = await PostModel.findById(postId);
     if (!post) throw createHttpError(404, "Post doesn't exist.");
+    await PostModel.findByIdAndDelete(postId);
 
-    res.status(200);
+    res.sendStatus(204);
   } catch (error) {
     next(error);
   }
