@@ -13,6 +13,8 @@ import {
 } from "firebase/storage";
 import { app } from "../../firebase";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../../app/store";
 
 const intialCreateForm: IntialCreateFormProp = {
   imgUrl: "",
@@ -23,6 +25,7 @@ const intialCreateForm: IntialCreateFormProp = {
 };
 
 const CreatePost = () => {
+  const { logInUser } = useSelector((state: RootState) => state.user);
   const [createForm, setCreateForm] = useState(intialCreateForm);
   const [selectedImg, setSelectedImg] = useState<string | null>(null);
   const [moreOptions, setMoreOptions] = useState(false);
@@ -46,7 +49,8 @@ const CreatePost = () => {
   };
 
   const handleImageUpload = async (file: File) => {
-    const fileName = new Date().getTime() + file.name;
+    const folderPath = `user-${logInUser?._id}`;
+    const fileName = `${folderPath}/${new Date().getTime() + file.name}`;
     const storage = getStorage(app);
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, file);
