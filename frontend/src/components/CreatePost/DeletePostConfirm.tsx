@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { DeletePost } from "../../networks/post.api";
 import axios from "axios";
+import { deletePost } from "../../features/postSlice";
+import { useDispatch } from "react-redux";
 
 interface DeleteProps {
   onDisplay: (boolean: boolean) => void;
   isDisplay: boolean;
   text: string;
   postId: string;
+  onDelete: (id: string) => void;
 }
 const DeletePostConfirm = ({
   onDisplay,
@@ -16,12 +19,16 @@ const DeletePostConfirm = ({
 }: DeleteProps) => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   const handleConfirm = async () => {
     try {
       setError(null);
       setLoading(true);
-      if (postId) await DeletePost(postId);
+
+      await DeletePost(postId);
+
       onDisplay(false);
+      dispatch(deletePost(postId));
       setLoading(false);
       return;
     } catch (error) {
@@ -47,6 +54,7 @@ const DeletePostConfirm = ({
       />
       <div className="w-[90%] bg-[var(--sec-light)] gap-5 shadow-lg z-20 px-4 py-6 rounded-md flex flex-col justify-center items-center">
         <p className="text-center">Please Confirm to {text} this post</p>
+        {error && <p className="text-red-500">{error}</p>}
         <div className="flex flex-col xs:flex-row gap-3 md:gap-4">
           <button
             type="button"
@@ -64,7 +72,7 @@ const DeletePostConfirm = ({
             type="button"
             className="bg-[var(--pri-red)] disabled:opacity-40 text-white hover:bg-[var(--sec-red)] py-3 px-3 md:px-5 rounded-full"
           >
-            {text}
+            {loading ? "Deleting" : text}
           </button>
         </div>
       </div>

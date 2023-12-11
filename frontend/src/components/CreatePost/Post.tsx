@@ -13,6 +13,7 @@ import DeletePostConfirm from "./DeletePostConfirm";
 interface PostProps {
   post: Post;
 }
+
 const Post = ({ post }: PostProps) => {
   const { logInUser } = useSelector((state: RootState) => state.user);
   const [postOwner, setPostOwner] = useState<User | null>(null);

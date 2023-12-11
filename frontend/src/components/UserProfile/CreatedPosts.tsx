@@ -3,7 +3,6 @@ import Masonry from "react-masonry-css";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { addCreatedPosts } from "../../features/postSlice";
-import { Post as PostType } from "../../models/post.model";
 import { GetTargetUserPosts, GetUserPosts } from "../../networks/post.api";
 import Post from "../CreatePost/Post";
 import Loader from "../Loader";
@@ -17,8 +16,8 @@ const breakpointColumnsObj = {
 
 const CreatedPost = () => {
   const { userId } = useParams();
+  const { createdPosts } = useSelector((state: RootState) => state.post);
   const { logInUser } = useSelector((state: RootState) => state.user);
-  const [createdPosts, setCreatedPosts] = useState<PostType[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const dispatch = useDispatch();
@@ -29,7 +28,7 @@ const CreatedPost = () => {
     try {
       const data = userId && (await GetTargetUserPosts(userId));
       if (data) {
-        setCreatedPosts(data);
+        dispatch(addCreatedPosts(data));
         setLoading(false);
         return;
       } else {
@@ -40,14 +39,13 @@ const CreatedPost = () => {
       setError(true);
       setLoading(false);
     }
-  }, [userId]);
+  }, [dispatch, userId]);
 
   const getMyCreatedPost = useCallback(async () => {
     setLoading(true);
     setError(false);
     try {
       const data = await GetUserPosts();
-      setCreatedPosts(data);
       dispatch(addCreatedPosts(data));
       setLoading(false);
     } catch {
@@ -68,7 +66,7 @@ const CreatedPost = () => {
         error && "text-red-500"
       } text-center mt-16 mb-20 px-3 tracking-wide`}
     >
-      {!loading && createdPosts.length === 0 && (
+      {!loading && createdPosts?.length === 0 && (
         <>
           Nothing to show...yet! Posts you create will live here.
           <Link
