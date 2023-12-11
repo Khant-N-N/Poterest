@@ -71,10 +71,15 @@ export const GetTargetUserPosts: RequestHandler = async (req, res, next) => {
 };
 
 export const GetPublicPosts: RequestHandler = async (req, res, next) => {
+  const limit = parseInt(req.query.limit as string, 10) || 15;
+  const startIndex = parseInt(req.query.startIndex as string, 10) || 0;
   try {
     if (!req.session.userId)
       throw createHttpError(401, "Please Sign In first.");
-    const posts = await PostModel.find();
+    const posts = await PostModel.find()
+      .sort({ createdAt: "desc" })
+      .limit(limit)
+      .skip(startIndex);
     res.status(200).json(posts);
   } catch (error) {
     next(error);
