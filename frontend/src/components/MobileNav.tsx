@@ -4,14 +4,16 @@ import { IoMdHome } from "react-icons/io";
 import { TiPlus } from "react-icons/ti";
 import { NavLink } from "react-router-dom";
 import { RootState } from "../app/store";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { showPostDetail } from "../features/postSlice";
 
 const MobileNav = () => {
   const { logInUser } = useSelector((state: RootState) => state.user);
-
+  const dispatch = useDispatch();
   return (
     <nav className="fixed md:hidden bottom-0 w-full z-50 flex items-center justify-between bg-[var(--light)] px-5 py-2">
       <NavLink
+        onClick={() => dispatch(showPostDetail(false))}
         to="/"
         className={({ isActive }) =>
           isActive ? "text-black" : "text-gray-400"
@@ -20,6 +22,7 @@ const MobileNav = () => {
         <IoMdHome className="text-[29px]" />
       </NavLink>
       <NavLink
+        onClick={() => dispatch(showPostDetail(false))}
         to="/search"
         className={({ isActive }) =>
           isActive ? "text-black" : "text-gray-400"
@@ -28,6 +31,7 @@ const MobileNav = () => {
         <FaSearch className="text-[24px]" />
       </NavLink>
       <NavLink
+        onClick={() => dispatch(showPostDetail(false))}
         to="/create"
         className={({ isActive }) =>
           isActive ? "text-black" : "text-gray-400"
@@ -36,6 +40,7 @@ const MobileNav = () => {
         <TiPlus className="text-[32px]" />
       </NavLink>
       <NavLink
+        onClick={() => dispatch(showPostDetail(false))}
         to="/message"
         className={({ isActive }) =>
           isActive ? "text-black" : "text-gray-400"
@@ -44,6 +49,7 @@ const MobileNav = () => {
         <AiFillMessage className="text-[29px]" />
       </NavLink>
       <NavLink
+        onClick={() => dispatch(showPostDetail(false))}
         to="/profile"
         className={({ isActive }) =>
           isActive

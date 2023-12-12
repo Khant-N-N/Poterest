@@ -2,11 +2,12 @@ import { Link, NavLink } from "react-router-dom";
 import { TfiPinterest } from "react-icons/tfi";
 import { AiFillMessage } from "react-icons/ai";
 import { FaChevronDown } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import SearchBox from "./SearchBox";
 import { RootState } from "../app/store";
 import { useEffect, useRef, useState } from "react";
 import { FaXmark } from "react-icons/fa6";
+import { showPostDetail } from "../features/postSlice";
 
 interface NavProps {
   setIsLogOut: (boolean: boolean) => void;
@@ -17,7 +18,7 @@ const Navbar = ({ setIsLogOut, setIsDelete }: NavProps) => {
 
   const { logInUser } = useSelector((state: RootState) => state.user);
   const displaySettingRef = useRef<HTMLDivElement | null>(null);
-
+  const dispatch = useDispatch();
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
@@ -36,6 +37,7 @@ const Navbar = ({ setIsLogOut, setIsDelete }: NavProps) => {
   return (
     <nav className="flex z-50 w-full fixed top-0 bg-[var(--light)] items-center justify-end md:justify-between gap-2 px-8 lg:px-20 py-3 lg:text-[20px] font-semibold">
       <Link
+        onClick={() => dispatch(showPostDetail(false))}
         to="/"
         className="text-[var(--pri-red)] text-[23px] hidden md:flex gap-3"
       >
@@ -44,6 +46,7 @@ const Navbar = ({ setIsLogOut, setIsDelete }: NavProps) => {
       {logInUser && (
         <div className="hidden md:flex gap-2">
           <NavLink
+            onClick={() => dispatch(showPostDetail(false))}
             to="/"
             className={({ isActive }) =>
               isActive
@@ -54,6 +57,7 @@ const Navbar = ({ setIsLogOut, setIsDelete }: NavProps) => {
             Home
           </NavLink>
           <NavLink
+            onClick={() => dispatch(showPostDetail(false))}
             to="/create"
             className={({ isActive }) =>
               isActive
@@ -71,6 +75,7 @@ const Navbar = ({ setIsLogOut, setIsDelete }: NavProps) => {
 
           <div className="flex items-center gap-8">
             <NavLink
+              onClick={() => dispatch(showPostDetail(false))}
               to="/message"
               className={({ isActive }) =>
                 isActive
@@ -81,6 +86,7 @@ const Navbar = ({ setIsLogOut, setIsDelete }: NavProps) => {
               <AiFillMessage className="text-[40px]" />
             </NavLink>
             <NavLink
+              onClick={() => dispatch(showPostDetail(false))}
               to="/profile"
               className={({ isActive }) =>
                 isActive
@@ -143,12 +149,14 @@ const Navbar = ({ setIsLogOut, setIsDelete }: NavProps) => {
       ) : (
         <div>
           <Link
+            onClick={() => dispatch(showPostDetail(false))}
             to="/login"
             className="p-4 bg-[var(--pri-red)] hover:bg-[var(--sec-red)] text-white rounded-full"
           >
             Log In
           </Link>
           <Link
+            onClick={() => dispatch(showPostDetail(false))}
             to="/signUp"
             className="p-4 bg-[var(--sec-light)] hover:bg-gray-400 rounded-full ms-3"
           >

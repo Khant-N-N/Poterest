@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { FaCircleUser } from "react-icons/fa6";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { RootState } from "../../app/store";
 import { Post } from "../../models/post.model";
@@ -9,6 +9,7 @@ import { User } from "../../models/user.model";
 import { GetTargetUser } from "../../networks/user.api";
 import { ClickFunc, HoverFunc } from "../PostFunctions";
 import DeletePostConfirm from "./DeletePostConfirm";
+import { setPostId, showPostDetail } from "../../features/postSlice";
 
 interface PostProps {
   post: Post;
@@ -20,6 +21,7 @@ const Post = ({ post }: PostProps) => {
   const [profileLoading, setProfileLoading] = useState(false);
   const [isShowMenu, setIsShowMenu] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const dispatch = useDispatch();
 
   const getPostOwner = useCallback(async () => {
     try {
@@ -47,6 +49,10 @@ const Post = ({ post }: PostProps) => {
       <div className="relative overflow-hidden rounded-lg md:rounded-2xl">
         <HoverFunc post={post} deletePost={() => setConfirmDelete(true)} />
         <img
+          onClick={() => {
+            dispatch(showPostDetail(true));
+            dispatch(setPostId(post._id));
+          }}
           id="image"
           loading="lazy"
           src={post.imgUrl}

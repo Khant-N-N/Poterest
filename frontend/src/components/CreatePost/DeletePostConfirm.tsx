@@ -9,7 +9,6 @@ interface DeleteProps {
   isDisplay: boolean;
   text: string;
   postId: string;
-  onDelete: (id: string) => void;
 }
 const DeletePostConfirm = ({
   onDisplay,

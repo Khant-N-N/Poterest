@@ -24,6 +24,10 @@ export const GetTargetUserPosts = async (id: string): Promise<Post[]> => {
   const response = await axios.get(`/api/posts/get-target-user-posts/${id}`);
   return response.data;
 };
+export const GetTargetPostDetails = async (id: string): Promise<Post> => {
+  const response = await axios.get(`/api/posts/get-post-details/${id}`);
+  return response.data;
+};
 
 interface EditFormProps {
   editForm: IntialCreateFormProp;

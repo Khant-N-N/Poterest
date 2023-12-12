@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { logOut_delete } from "../features/userSlice";
 import { GetAuthenticatedUser } from "../networks/user.api";
@@ -14,7 +14,7 @@ const breakpointColumnsObj = {
   850: 2,
 };
 
-const LogInHome = () => {
+const LogInHomeC = () => {
   const [publicPosts, setPublicPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -68,5 +68,5 @@ const LogInHome = () => {
     </div>
   );
 };
-
+const LogInHome = React.memo(LogInHomeC);
 export default LogInHome;

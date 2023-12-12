@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import Loader from "./components/Loader";
 import type { RootState } from "./app/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,6 +9,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import MobileNav from "./components/MobileNav";
 import UserProfilePublic from "./pages/profile/UserProfilePublic";
 import ConfirmText from "./components/ConfirmText";
+import { showPostDetail } from "./features/postSlice";
 
 const LogIn = lazy(() => import("./pages/signin-up/LogIn"));
 const SignUp = lazy(() => import("./pages/signin-up/SignUp"));
@@ -16,17 +17,23 @@ const Home = lazy(() => import("./pages/Home"));
 const LogInHome = lazy(() => import("./pages/LogInHome"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const CreatePost = lazy(() => import("./pages/posts/CreatePost"));
+const PostDetails = lazy(() => import("./pages/posts/PostDetails"));
 const EditPost = lazy(() => import("./pages/posts/EditPost"));
 const MessageInbox = lazy(() => import("./pages/MessageInbox"));
 const UserProfile = lazy(() => import("./pages/profile/UserProfile"));
 const ProfileEdit = lazy(() => import("./pages/profile/ProfileEdit"));
 
 const App = () => {
+  const { isPostDetailShow } = useSelector((state: RootState) => state.post);
+  const { logInUser } = useSelector((state: RootState) => state.user);
   const [isLogOut, setIsLogOut] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
-  const { logInUser } = useSelector((state: RootState) => state.user);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(showPostDetail(false));
+  }, [dispatch]);
 
   return (
     <>
@@ -39,6 +46,7 @@ const App = () => {
           </div>
         }
       >
+        {isPostDetailShow && <PostDetails />}
         <ConfirmText
           text="LogOut"
           onDisplay={(boolean) => setIsLogOut(boolean)}

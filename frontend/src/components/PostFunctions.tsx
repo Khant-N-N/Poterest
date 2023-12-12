@@ -3,11 +3,12 @@ import { FaPen, FaTrash, FaRegHeart, FaHeart } from "react-icons/fa6";
 import { HiShare } from "react-icons/hi";
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import { useRef, useEffect, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useRef, useEffect, useState, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { saveAs } from "file-saver";
 import { useDispatch } from "react-redux";
 import { getAuthenticatedUser } from "../features/userSlice";
+import { setPostId, showPostDetail } from "../features/postSlice";
 import { Post } from "../models/post.model";
 import axios from "axios";
 import { AddSavedPost, RemoveSavedPost } from "../networks/post.api";
@@ -37,7 +38,10 @@ const HoverFunc = ({ post, deletePost }: IdProps) => {
       );
   }, [logInUser, post._id]);
 
-  const handleSavePost = async () => {
+  const handleSavePost = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
     try {
       setSaveLoading(true);
       setSaveError(null);
@@ -52,7 +56,10 @@ const HoverFunc = ({ post, deletePost }: IdProps) => {
       }
     }
   };
-  const handleRemoveSave = async () => {
+  const handleRemoveSave = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
     try {
       setSaveLoading(true);
       setSaveError(null);
@@ -70,10 +77,17 @@ const HoverFunc = ({ post, deletePost }: IdProps) => {
 
   return (
     <div className="absolute group transition-opacity opacity-0 hover:opacity-100 text-[11px] xs:text-[18px] cursor-zoom-in bg-black/60 p-2 hidden md:flex flex-col items-end justify-between w-full h-full">
+      <div
+        onClick={() => {
+          dispatch(showPostDetail(true));
+          dispatch(setPostId(post._id));
+        }}
+        className="absolute w-full h-full z-10"
+      />
       <button
         disabled={saveLoading}
         onClick={isSaved ? handleRemoveSave : handleSavePost}
-        className="p-1 text-[12px] md:text-[18px] xs:p-3 hidden group-hover:block rounded-3xl text-white bg-[var(--pri-red)] hover:bg-[var(--sec-red)] disabled:opacity-50"
+        className="p-1 text-[12px] md:text-[18px] xs:p-3 hidden group-hover:block rounded-3xl text-white bg-[var(--pri-red)] hover:bg-[var(--sec-red)] disabled:opacity-50 z-20"
       >
         {isSaved ? "UnSaved" : "Save"}
       </button>
@@ -81,25 +95,32 @@ const HoverFunc = ({ post, deletePost }: IdProps) => {
         {logInUser?._id === post.uploaderId && (
           <div className="flex gap-3">
             <div
-              onClick={() => navigate(`/edit-post/${post._id}`)}
-              className="bg-[var(--light)] cursor-pointer p-1 xs:p-2 rounded-full opacity-70 hover:opacity-100"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/edit-post/${post._id}`);
+              }}
+              className="bg-[var(--light)] cursor-pointer p-1 xs:p-2 rounded-full opacity-70 hover:opacity-100 z-20"
             >
               <FaPen />
             </div>
 
             <div
-              onClick={() => deletePost(true)}
-              className="bg-[var(--light)] cursor-pointer p-1 xs:p-2 rounded-full opacity-70 hover:opacity-100"
+              onClick={(e) => {
+                e.stopPropagation();
+                deletePost(true);
+              }}
+              className="bg-[var(--light)] cursor-pointer p-1 xs:p-2 rounded-full opacity-70 hover:opacity-100 z-20"
             >
               <FaTrash />
             </div>
           </div>
         )}
         <a
+          onClick={(e) => e.stopPropagation()}
           download
           href={post.imgUrl}
           target="_blank"
-          className="bg-[var(--light)] cursor-pointer p-1 xs:p-2 rounded-full opacity-70 hover:opacity-100"
+          className="bg-[var(--light)] cursor-pointer p-1 xs:p-2 rounded-full opacity-70 hover:opacity-100 z-20"
         >
           <MdDownload />
         </a>
@@ -171,7 +192,7 @@ const ClickFunc = ({ onClick, post, deletePost }: IdProps) => {
   return (
     <div
       ref={showMenuRef}
-      className="absolute bg-white rounded-md px-1 flex bottom-1 right-1 flex-col h-[130px] md:h-auto overflow-y-scroll"
+      className="absolute bg-white rounded-md px-1 flex bottom-1 right-1 flex-col h-[130px] md:h-auto overflow-y-scroll z-10"
     >
       <button
         onClick={isSaved ? handleRemoveSave : handleSavePost}
@@ -194,7 +215,10 @@ const ClickFunc = ({ onClick, post, deletePost }: IdProps) => {
       {logInUser?._id === post.uploaderId && (
         <>
           <div
-            onClick={() => navigate(`/edit-post/${post._id}`)}
+            onClick={() => {
+              navigate(`/edit-post/${post._id}`);
+              dispatch(showPostDetail(false));
+            }}
             className="cursor-pointer p-2 flex gap-2 items-center opacity-70 hover:opacity-100"
           >
             <FaPen /> Edit
