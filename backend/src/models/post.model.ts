@@ -8,7 +8,13 @@ const postSchema = new Schema(
     description: { type: String, default: "" },
     topic: [String],
     allowComment: { type: Boolean, default: true },
-    comments: [Object],
+    comments: [
+      {
+        commenterId: { type: String },
+        comment: { type: String },
+        createdAt: { type: Date },
+      },
+    ],
     reacts: [
       {
         reactorId: { type: String },

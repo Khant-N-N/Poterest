@@ -187,3 +187,35 @@ export const RemoveSavedPost: RequestHandler<
     next(error);
   }
 };
+
+interface AddACommentType {
+  postId: string;
+  newComment: {
+    commenterId: string;
+    comment: string;
+    createdAt: Date;
+  };
+}
+
+export const AddAComment: RequestHandler<
+  unknown,
+  unknown,
+  AddACommentType
+> = async (req, res, next) => {
+  const postId = req.body.postId;
+  const newComment = req.body.newComment;
+
+  try {
+    if (!mongoose.isValidObjectId(postId))
+      throw createHttpError(400, "Invalid post Id");
+
+    const post = await PostModel.findById(postId).exec();
+
+    if (!post) throw createHttpError(404, "Post doesn't exist.");
+    post.comments = [...post.comments, newComment];
+    await post.save();
+    res.status(201).json(post);
+  } catch (error) {
+    next(error);
+  }
+};
