@@ -14,7 +14,7 @@ const postSchema = new Schema(
         reactorId: { type: String },
         react: {
           type: String,
-          enum: ["good idea", "love", "thanks", "wow", "haha"],
+          enum: ["good_idea", "love", "thanks", "wow", "haha"],
         },
       },
     ],
