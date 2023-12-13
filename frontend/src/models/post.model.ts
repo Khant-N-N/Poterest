@@ -6,7 +6,24 @@ export interface Post {
   description: string;
   topic: string[];
   allowComment: boolean;
-  comments: string[];
+  comments: [
+    {
+      _id: string;
+      commenterId: string;
+      comment: string;
+      createdAt: string;
+      likes: string[];
+      replies: [
+        {
+          _id: string;
+          reply: string;
+          replierId: string;
+          replyAt: string;
+          likes: string[];
+        }
+      ];
+    }
+  ];
   reacts: [
     {
       reactorId: string;

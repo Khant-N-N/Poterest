@@ -4,6 +4,10 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { GetTargetUser } from "../../networks/user.api";
 import { User } from "../../models/user.model";
+import { FaChevronDown } from "react-icons/fa";
+import { PiHeartStraightBold } from "react-icons/pi";
+import love from "../../assets/reacts/heart.png";
+import { BiDotsVerticalRounded } from "react-icons/bi";
 
 interface CommentProps {
   postData: Post;
@@ -11,26 +15,57 @@ interface CommentProps {
 
 const CommentsOfPost = ({ postData }: CommentProps) => {
   const [seeComment, setSeeComment] = useState(false);
+  const [seeReply, setSeeReply] = useState(false);
 
   return (
     <div className="mx-5 my-8">
       <p
         onClick={() => setSeeComment(!seeComment)}
-        className="font-semibold cursor-pointer hover:border-4 rounded-2xl"
+        className="font-semibold cursor-pointer px-2 hover:border-4 rounded-2xl flex justify-between items-center"
       >
-        Comments
+        Comments <FaChevronDown />
       </p>
       {seeComment && (
-        <div className="mx-5 md:mx-9">
+        <div className="flex flex-col gap-7 py-5">
           {postData.comments.length ? (
-            postData.comments.map((comment, key) => (
-              <div key={key}>
-                <CommentOwner commenterId={comment} />
-                <p>{comment}</p>
+            postData.comments.map((comment) => (
+              <div
+                key={comment._id}
+                className="flex flex-col xs:px-5 items-end"
+              >
+                <CommentOwner
+                  id={comment._id}
+                  comment={comment.comment}
+                  commenterId={comment.commenterId}
+                  createdAt={comment.createdAt}
+                  likes={comment.likes}
+                />
+                <div className="w-full ps-14 text-[16px]">
+                  {comment.replies.length > 0 && (
+                    <p className="my-4" onClick={() => setSeeReply(!seeReply)}>
+                      {seeReply
+                        ? "---- Hide reply"
+                        : `---- View ${comment.replies.length} ${
+                            comment.replies.length === 1 ? "reply" : "replies"
+                          }`}
+                    </p>
+                  )}
+                  {comment.replies.length > 0 &&
+                    seeReply &&
+                    comment.replies.map((reply) => (
+                      <CommentOwner
+                        id={reply._id}
+                        comment={reply.reply}
+                        commenterId={reply.replierId}
+                        createdAt={reply.replyAt}
+                        likes={reply.likes}
+                      />
+                    ))}
+                </div>
               </div>
             ))
           ) : (
-            <p className="text-[16px] text-gray-600 py-6">
+            <p className="text-[16px] mx-5 md:mx-9 text-gray-600 py-6">
               No comments yet! Add one to start the conversation.
             </p>
           )}
@@ -40,10 +75,33 @@ const CommentsOfPost = ({ postData }: CommentProps) => {
   );
 };
 
-const CommentOwner = ({ commenterId }) => {
+interface comment {
+  id: string;
+  commenterId: string;
+  comment: string;
+  createdAt: string;
+  likes: string[];
+}
+
+const CommentOwner = ({
+  id,
+  comment,
+  commenterId,
+  createdAt,
+  likes,
+}: comment) => {
   const { logInUser } = useSelector((state: RootState) => state.user);
   const [loading, setLoading] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [isReply, setIsReply] = useState(false);
   const [commenter, setCommenter] = useState<User | null>(null);
+  const [timeStamp, setTimeStamp] = useState({
+    timeDifferenceInSeconds: 0,
+    timeDifferenceInMinutes: 0,
+    timeDifferenceInHours: 0,
+    timeDifferenceInDays: 0,
+  });
+
   const getCommentOwner = useCallback(async () => {
     try {
       setLoading(true);
@@ -59,14 +117,90 @@ const CommentOwner = ({ commenterId }) => {
   useEffect(() => {
     if (logInUser?._id !== commenterId && commenterId) getCommentOwner();
   }, [getCommentOwner, logInUser?._id, commenterId]);
+
+  const calculateTime = useCallback(() => {
+    const currentTime = new Date().getTime();
+    const commmentTime = new Date(createdAt).getTime();
+
+    const timeDiff = currentTime - commmentTime;
+    setTimeStamp({
+      timeDifferenceInSeconds: Math.round(timeDiff / 1000),
+      timeDifferenceInMinutes: Math.round(timeDiff / (1000 * 60)),
+      timeDifferenceInHours: Math.round(timeDiff / (1000 * 60 * 60)),
+      timeDifferenceInDays: Math.round(timeDiff / (1000 * 60 * 60 * 24)),
+    });
+  }, [createdAt]);
+  useEffect(() => {
+    calculateTime();
+  }, [calculateTime]);
+  let CommentedTime = timeStamp.timeDifferenceInSeconds + "s";
+  if (timeStamp.timeDifferenceInSeconds > 60)
+    CommentedTime = timeStamp.timeDifferenceInMinutes + "m";
+  if (timeStamp.timeDifferenceInMinutes > 60)
+    CommentedTime = timeStamp.timeDifferenceInHours + "h";
+  if (timeStamp.timeDifferenceInHours > 24)
+    CommentedTime = timeStamp.timeDifferenceInDays + "d";
+
   return (
     <>
-      <img
-        src={commenter?.avatar || logInUser?.avatar}
-        alt={commenter?.username || logInUser?.username}
-        className="w-8 h-8 rounded-full object-contain"
-      />
-      <span>{commenter?.username || logInUser?.username}</span>
+      <div className="flex text-[16px] w-full">
+        <img
+          src={commenter?.avatar || logInUser?.avatar}
+          alt={commenter?.username || logInUser?.username}
+          className="w-8 h-8 rounded-full object-cover mr-2"
+        />
+        <div className="flex flex-wrap">
+          <p>
+            <span className="font-medium mr-3 xs:text-[18px]">
+              {commenter?.username || logInUser?.username}
+            </span>
+            {comment}
+          </p>
+          <div className="w-full text-[15px] flex gap-4 mt-2 items-center">
+            <p className="text-gray-600">{CommentedTime}</p>
+            <button type="button" onClick={() => setIsReply(true)}>
+              Reply
+            </button>
+            {isLiked ? (
+              <div className="flex items-center gap-2">
+                {likes.length > 0 && likes.length}
+                <img
+                  onClick={() => setIsLiked(!isLiked)}
+                  src={love}
+                  alt="liked"
+                  className="w-5 h-5 select-none rounded-full object-cover cursor-pointer"
+                />
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                {likes.length > 0 && likes.length}
+                <PiHeartStraightBold
+                  onClick={() => setIsLiked(!isLiked)}
+                  className="cursor-pointer select-none"
+                />
+              </div>
+            )}
+            <BiDotsVerticalRounded className="cursor-pointer text-[26px] rotate-90 hover:bg-[var(--sec-light)] rounded-full" />
+          </div>
+        </div>
+      </div>
+      {isReply && (
+        <>
+          <textarea
+            autoFocus
+            placeholder="Reply"
+            className="bg-transparent border-2 outline-none px-4 pt-2 pb-6 rounded-3xl h-[5rem] w-full xs:w-4/5"
+          />
+          <p className="flex w-4/5 justify-end gap-4">
+            <button type="button" onClick={() => setIsReply(false)}>
+              Cancel
+            </button>
+            <button type="button" onClick={() => setIsReply(false)}>
+              Save
+            </button>
+          </p>
+        </>
+      )}
     </>
   );
 };
