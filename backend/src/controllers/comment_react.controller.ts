@@ -15,6 +15,7 @@ interface AddACommentType {
       reply?: string | null | undefined;
       replierId?: string | null | undefined;
       replyAt?: Date | null | undefined;
+      likes: string[];
     }[];
   };
 }
@@ -62,6 +63,7 @@ export const ReplyComment: RequestHandler = async (req, res, next) => {
             replierId,
             reply,
             replyAt: new Date(),
+            likes: [],
           },
         },
       }

@@ -11,7 +11,6 @@ const postSchema = new Schema(
     comments: {
       type: [
         {
-          _id: { type: String },
           commenterId: { type: String },
           comment: { type: String },
           createdAt: { type: Date },
@@ -21,6 +20,7 @@ const postSchema = new Schema(
               reply: { type: String },
               replierId: { type: String },
               replyAt: { type: Date },
+              likes: [String],
             },
           ],
         },
