@@ -1,5 +1,6 @@
 import express from "express";
 import * as postControllers from "../controllers/post.controller";
+import * as CRControllers from "../controllers/comment_react.controller";
 
 const router = express.Router();
 
@@ -15,5 +16,6 @@ router.delete("/delete-post/:id", postControllers.DeletePost);
 router.post("/saved-post/", postControllers.SavedPost);
 router.post("/removed-post/", postControllers.RemoveSavedPost);
 
-router.patch("/comment", postControllers.AddAComment);
+router.patch("/comment", CRControllers.AddAComment);
+router.patch("/reply", CRControllers.ReplyComment);
 export default router;

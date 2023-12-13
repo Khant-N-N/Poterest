@@ -76,7 +76,9 @@ export const GetTargetPost: RequestHandler = async (req, res, next) => {
     if (!mongoose.isValidObjectId(postId))
       throw createHttpError(400, "Invalid User Id");
 
-    const Posts = await PostModel.findById(postId);
+    const Posts = await PostModel.findById(postId)
+      .select("+caption +description +allowComment +comments +reacts")
+      .exec();
     if (!Posts) throw createHttpError(404, "Post doesn't exist.");
     res.status(200).json(Posts);
   } catch (error) {
@@ -183,44 +185,6 @@ export const RemoveSavedPost: RequestHandler<
     user.saved = user.saved.filter((post) => post._id !== removeSavedPost);
     await user.save();
     res.status(201).json(user);
-  } catch (error) {
-    next(error);
-  }
-};
-
-interface AddACommentType {
-  postId: string;
-  newComment: {
-    commenterId: string;
-    comment: string;
-    createdAt: Date;
-    likes: string[];
-    replies: {
-      reply?: string | null | undefined;
-      replierId?: string | null | undefined;
-      replyAt?: Date | null | undefined;
-    }[];
-  };
-}
-
-export const AddAComment: RequestHandler<
-  unknown,
-  unknown,
-  AddACommentType
-> = async (req, res, next) => {
-  const postId = req.body.postId;
-  const newComment = req.body.newComment;
-
-  try {
-    if (!mongoose.isValidObjectId(postId))
-      throw createHttpError(400, "Invalid post Id");
-
-    const post = await PostModel.findById(postId).exec();
-
-    if (!post) throw createHttpError(404, "Post doesn't exist.");
-    post.comments = [...post.comments, newComment];
-    await post.save();
-    res.status(201).json(post);
   } catch (error) {
     next(error);
   }
