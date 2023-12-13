@@ -97,7 +97,7 @@ const EditPost = () => {
         <label className="switch">
           <input
             type="checkbox"
-            checked={editForm.allowComment}
+            defaultChecked={editForm.allowComment}
             onChange={() =>
               setEditForm({
                 ...editForm,
