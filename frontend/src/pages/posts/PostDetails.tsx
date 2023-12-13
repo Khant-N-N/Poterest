@@ -1,19 +1,16 @@
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useReducer } from "react";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { FaArrowLeft } from "react-icons/fa";
 import { FaCircleUser } from "react-icons/fa6";
-import { PiHeartStraightBold } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { RootState } from "../../app/store";
-import good_idea from "../../assets/reacts/good idea.png";
-import haha from "../../assets/reacts/haha.png";
-import love from "../../assets/reacts/heart.png";
-import thanks from "../../assets/reacts/thanks.png";
-import wow from "../../assets/reacts/wow.png";
 import DeletePostConfirm from "../../components/CreatePost/DeletePostConfirm";
 import Loader from "../../components/Loader";
+import AddComment from "../../components/PostDetails/AddComment";
+import CommentsOfPost from "../../components/PostDetails/CommentsOfPost";
+import Reacts from "../../components/PostDetails/Reacts";
 import { ClickFunc } from "../../components/PostFunctions";
 import { showPostDetail } from "../../features/postSlice";
 import { Post } from "../../models/post.model";
@@ -21,17 +18,60 @@ import { User } from "../../models/user.model";
 import { GetTargetPostDetails } from "../../networks/post.api";
 import { GetTargetUser } from "../../networks/user.api";
 
+interface InitialValuesTypes {
+  postData: Post | null;
+  profileLoading: boolean;
+  postOwner: User | null;
+  error: string | null;
+  loading: boolean;
+  confirmDelete: boolean;
+  isShowMenu: boolean;
+  isImgLans: boolean;
+}
+interface Action {
+  type: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  payload: any;
+}
+const initialValues: InitialValuesTypes = {
+  postData: null,
+  profileLoading: false,
+  postOwner: null,
+  error: null,
+  loading: false,
+  confirmDelete: false,
+  isShowMenu: false,
+  isImgLans: false,
+};
+
+const reducer = (state: InitialValuesTypes, action: Action) => {
+  switch (action.type) {
+    case "SET_POSTDATA":
+      return { ...state, postData: action.payload };
+    case "PROFILE_LOADING":
+      return { ...state, profileLoading: action.payload };
+    case "GET_POSTOWNER":
+      return { ...state, postOwner: action.payload };
+    case "SET_ERROR":
+      return { ...state, error: action.payload };
+    case "DELETE_CONFIRM":
+      return { ...state, confirmDelete: action.payload };
+    case "PAGE_LOADING":
+      return { ...state, loading: action.payload };
+    case "IS_SHOW_MENU":
+      return { ...state, isShowMenu: action.payload };
+    case "IS_IMG_LANSCAPE":
+      return { ...state, isImgLans: action.payload };
+
+    default:
+      return state;
+  }
+};
+
 const PostDetails = () => {
-  const [profileLoading, setProfileLoading] = useState(false);
+  const [state, reducerDispatch] = useReducer(reducer, initialValues);
   const { logInUser } = useSelector((state: RootState) => state.user);
   const { postId } = useSelector((state: RootState) => state.post);
-  const [postData, setPostData] = useState<Post | null>(null);
-  const [postOwner, setPostOwner] = useState<User | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const [isShowMenu, setIsShowMenu] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [isImgLans, setIsImgLans] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -42,27 +82,30 @@ const PostDetails = () => {
         document.getElementById("image")?.offsetHeight;
 
       if (height! < width!) {
-        setIsImgLans(true);
+        reducerDispatch({ type: "IS_IMG_LANSCAPE", payload: true });
       } else {
-        setIsImgLans(false);
+        reducerDispatch({ type: "IS_IMG_LANSCAPE", payload: false });
       }
     };
     getImageSize();
-  }, [postData]);
+  }, [state.postData]);
 
   useEffect(() => {
     const getPostDetail = async () => {
       try {
-        setLoading(true);
-        setError(null);
+        reducerDispatch({ type: "PAGE_LOADING", payload: true });
+        reducerDispatch({ type: "SET_ERROR", payload: null });
         const data = await GetTargetPostDetails(postId!);
-        setPostData(data);
-        setLoading(false);
+        reducerDispatch({ type: "SET_POSTDATA", payload: data });
+        reducerDispatch({ type: "PAGE_LOADING", payload: false });
       } catch (error) {
         if (axios.isAxiosError(error)) {
-          setError(error.response?.data.error);
+          reducerDispatch({
+            type: "SET_ERROR",
+            payload: error.response?.data.error,
+          });
         }
-        setLoading(false);
+        reducerDispatch({ type: "PAGE_LOADING", payload: false });
       }
     };
     getPostDetail();
@@ -70,94 +113,108 @@ const PostDetails = () => {
 
   const getPostOwner = useCallback(async () => {
     try {
-      setProfileLoading(true);
-      const user = await GetTargetUser(postData!.uploaderId);
-      setPostOwner(user);
-      setProfileLoading(false);
+      reducerDispatch({ type: "PROFILE_LOADING", payload: true });
+      const user = await GetTargetUser(state.postData!.uploaderId);
+      reducerDispatch({ type: "GET_POSTOWNER", payload: user });
+      reducerDispatch({ type: "PROFILE_LOADING", payload: false });
     } catch (error) {
       console.log(error);
-      setProfileLoading(false);
+      reducerDispatch({ type: "PROFILE_LOADING", payload: false });
     }
-  }, [postData]);
+  }, [state.postData]);
 
   useEffect(() => {
-    if (logInUser?._id !== postData?.uploaderId && postData) getPostOwner();
-  }, [getPostOwner, logInUser?._id, postData]);
+    if (logInUser?._id !== state.postData?.uploaderId && state.postData)
+      getPostOwner();
+  }, [getPostOwner, logInUser?._id, state.postData]);
 
   return (
-    <div className="absolute flex justify-center w-full h-full z-30 px-4 bg-[var(--light)]">
+    <div className="fixed top-0 pt-10 md:pt-24 flex flex-col items-center w-full h-full z-30 px-4 bg-[var(--light)]">
       <div
         onClick={() => dispatch(showPostDetail(false))}
-        className="p-3 fixed z-10 left-5 md:left-16 md:text-[22px] shadow-2xl rounded-full bg-[var(--sec-light)]"
+        className="p-3 fixed cursor-pointer z-10 left-5 md:left-16 md:text-[22px] shadow-2xl rounded-full bg-[var(--sec-light)]"
       >
         <FaArrowLeft />
       </div>
-      {loading && (
+      {state.loading && (
         <div className="flex w-full h-full items-center justify-center">
           <Loader />
         </div>
       )}
-      {error && <p>{error}</p>}
-      {!loading && !error && postData && (
+      {state.error && <p>{state.error}</p>}
+      {!state.loading && !state.error && state.postData && (
         <div
           className={`${
-            isImgLans ? "max-w-[800px]" : "max-w-[500px]"
-          } shadow-2xl rounded-3xl overflow-y-scroll scrollbar-hide relative`}
+            state.isImgLans ? "max-w-[800px]" : "max-w-[500px]"
+          } shadow-2xl rounded-3xl overflow-y-scroll mb-10 md:mb-2 scrollbar-hide relative`}
         >
           <DeletePostConfirm
-            onDisplay={(boolean) => setConfirmDelete(boolean)}
-            isDisplay={confirmDelete}
+            onDisplay={(boolean) =>
+              reducerDispatch({ type: "DELETE_CONFIRM", payload: boolean })
+            }
+            isDisplay={state.confirmDelete}
             text="delete"
-            postId={postData._id}
+            postId={state.postData._id}
           />
-          <img
-            id="image"
-            loading="lazy"
-            src={postData.imgUrl}
-            alt={postData.caption}
-            className="w-full h-auto object-contain"
-          />
-          <div className="relative flex justify-between px-8 py-10 gap-2">
-            {isShowMenu && (
+          <a href={state.postData.imgUrl} target="_blank">
+            <img
+              id="image"
+              loading="lazy"
+              src={state.postData.imgUrl}
+              alt={state.postData.caption}
+              className="w-full h-auto object-contain"
+            />
+          </a>
+          <div className="relative flex justify-between px-8 pt-4 pb-10 gap-2">
+            {state.isShowMenu && (
               <ClickFunc
-                onClick={() => setIsShowMenu(false)}
-                post={postData}
-                deletePost={() => setConfirmDelete(true)}
+                onClick={() =>
+                  reducerDispatch({ type: "IS_SHOW_MENU", payload: false })
+                }
+                post={state.postData}
+                deletePost={() =>
+                  reducerDispatch({ type: "DELETE_CONFIRM", payload: true })
+                }
               />
             )}
-            <div>
-              <h2 className="font-semibold">{postData.caption}</h2>
-              <p>{postData.description}</p>
+            <div className="w-4/5">
+              <h2 className="font-semibold">{state.postData.caption}</h2>
+              <p>{state.postData.description}</p>
             </div>
             <BiDotsVerticalRounded
-              onClick={() => setIsShowMenu(!isShowMenu)}
+              onClick={() =>
+                reducerDispatch({
+                  type: "IS_SHOW_MENU",
+                  payload: !state.isShowMenu,
+                })
+              }
               className="cursor-pointer text-[30px] rotate-90 hover:bg-[var(--sec-light)] rounded-full"
             />
           </div>
           <div className="mx-5 md:mx-9 flex justify-between">
-            {profileLoading ? (
+            {state.profileLoading ? (
               <FaCircleUser className="text-[20px]" />
             ) : (
               <Link
                 onClick={() => dispatch(showPostDetail(false))}
                 to={
-                  logInUser?._id === postData.uploaderId
+                  logInUser?._id === state.postData.uploaderId
                     ? "/profile"
-                    : `/profile/${postData.uploaderId}`
+                    : `/profile/${state.postData.uploaderId}`
                 }
                 className="flex gap-3 items-center cursor-pointer hover:underline"
               >
                 <img
-                  src={postOwner?.avatar || logInUser?.avatar}
+                  src={state.postOwner?.avatar || logInUser?.avatar}
                   alt="owner"
                   className="w-10 h-10 md:w-14 md:h-14 rounded-full object-cover"
                 />
                 <p className="flex flex-col font-medium text-[17px]">
-                  {postOwner?.username || logInUser?.username}
-                  {postOwner?.followers.length === 0 && (
+                  {state.postOwner?.username || logInUser?.username}
+                  {state.postOwner?.followers.length === 0 && (
                     <span className="text-[14px] font-normal">
-                      {postOwner?.followers.length}{" "}
-                      {postOwner?.followers.length > 1
+                      {state.postOwner?.followers.length}{" "}
+                      {state.postOwner?.followers.length > 1
                         ? "followers"
                         : "follower"}
                     </span>
@@ -171,79 +228,19 @@ const PostDetails = () => {
             </button>
           </div>
 
-          <div className="mx-5 my-8">
-            <p className="font-semibold cursor-pointer hover:border-4 rounded-2xl">
-              Comments
-            </p>
-          </div>
+          <CommentsOfPost postData={state.postData} />
 
           <div className="sticky bottom-0 bg-[var(--light)] border-t-2 p-5">
             <div className="flex justify-between items-center mb-4 font-medium relative">
-              <p>What do you think?</p>
-              <div className="flex  gap-3 items-center">
-                <div>2</div>
-                <div className="group">
-                  <div className="hidden group-hover:flex md:group-hover:-top-20 gap-3 bg-[var(--light)] shadow-2xl p-3 rounded-full absolute z-30 right-0 -top-14">
-                    <img
-                      title="good idea"
-                      id="good idea"
-                      src={good_idea}
-                      alt="good react"
-                      className="w-10 h-10 md:w-14 md:h-14 hover:scale-[1.3] hover:-translate-y-4 cursor-pointer transition-transform"
-                    />
-                    <img
-                      title="love"
-                      id="love"
-                      src={love}
-                      alt="love react"
-                      className="w-10 h-10 md:w-14 md:h-14 hover:scale-[1.3] hover:-translate-y-4 cursor-pointer transition-transform"
-                    />
-                    <img
-                      title="thanks"
-                      id="thanks"
-                      src={thanks}
-                      alt="thanks react"
-                      className="w-10 h-10 md:w-14 md:h-14 hover:scale-[1.3] hover:-translate-y-4 cursor-pointer transition-transform"
-                    />
-                    <img
-                      title="wow"
-                      id="wow"
-                      src={wow}
-                      alt="wow react"
-                      className="w-10 h-10 md:w-14 md:h-14 hover:scale-[1.3] hover:-translate-y-4 cursor-pointer transition-transform"
-                    />
-                    <img
-                      title="haha"
-                      id="haha"
-                      src={haha}
-                      alt="haha react"
-                      className="w-10 h-10 md:w-14 md:h-14 hover:scale-[1.3] hover:-translate-y-4 cursor-pointer transition-transform"
-                    />
-                  </div>
-                  <div className="p-3 bg-[var(--sec-light)] rounded-full cursor-pointer text-[25px]">
-                    <PiHeartStraightBold />
-                  </div>
-                </div>
-              </div>
+              <p>
+                {state.postData.comments.length
+                  ? state.postData.comments.length + " comments"
+                  : "What do you think?"}
+              </p>
+
+              <Reacts postData={state.postData} />
             </div>
-            <div className="flex gap-2 items-center">
-              <img
-                src={logInUser?.avatar}
-                alt="my profile"
-                className="w-10 h-10 md:w-14 md:h-14 rounded-full object-cover"
-              />
-              {postData?.allowComment ? (
-                <input
-                  type="text"
-                  placeholder="Add a comment"
-                  className="p-4 bg-[var(--sec-light)] focus:bg-transparent focus:border rounded-full w-full"
-                />
-              ) : (
-                <p className="text-gray-400 text-[15px] md:text-[19px]">
-                  This comment section is disabled by the owner
-                </p>
-              )}
-            </div>
+            <AddComment postData={state.postData} />
           </div>
         </div>
       )}
