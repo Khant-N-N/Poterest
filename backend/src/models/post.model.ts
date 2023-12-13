@@ -13,6 +13,14 @@ const postSchema = new Schema(
         commenterId: { type: String },
         comment: { type: String },
         createdAt: { type: Date },
+        likes: [String],
+        replies: [
+          {
+            reply: { type: String },
+            replierId: { type: String },
+            replyAt: { type: Date },
+          },
+        ],
       },
     ],
     reacts: [

@@ -194,6 +194,12 @@ interface AddACommentType {
     commenterId: string;
     comment: string;
     createdAt: Date;
+    likes: string[];
+    replies: {
+      reply?: string | null | undefined;
+      replierId?: string | null | undefined;
+      replyAt?: Date | null | undefined;
+    }[];
   };
 }
 
