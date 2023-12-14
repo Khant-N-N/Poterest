@@ -77,7 +77,7 @@ export const GetTargetPost: RequestHandler = async (req, res, next) => {
       throw createHttpError(400, "Invalid User Id");
 
     const Posts = await PostModel.findById(postId)
-      .select("+caption +description +allowComment +comments +reacts")
+      .select("+comments +reacts")
       .exec();
     if (!Posts) throw createHttpError(404, "Post doesn't exist.");
     res.status(200).json(Posts);
@@ -108,15 +108,22 @@ export const UpdatePost: RequestHandler = async (req, res, next) => {
     if (!mongoose.isValidObjectId(postId))
       throw createHttpError(400, "Invalid Post Id");
 
-    const post = await PostModel.findById(postId);
-    if (!post) throw createHttpError(404, "Post doesn't exist.");
-    if (req.body.description) post.description = req.body.description;
-    if (req.body.caption) post.caption = req.body.caption;
-    if (req.body.allowComment) post.allowComment = req.body.allowComment;
-    if (req.body.topic) post.topic = req.body.topic;
-    await post.save();
+    const updatedPost = await PostModel.findByIdAndUpdate(
+      postId,
+      {
+        $set: {
+          description: req.body.description || undefined,
+          caption: req.body.caption || undefined,
+          allowComment: req.body.allowComment,
+          topic: req.body.topic || undefined,
+        },
+      },
+      { new: true, runValidators: true }
+    );
 
-    res.status(201).json(post);
+    if (!updatedPost) throw createHttpError(404, "Post doesn't exist.");
+
+    res.status(201).json(updatedPost);
   } catch (error) {
     next(error);
   }

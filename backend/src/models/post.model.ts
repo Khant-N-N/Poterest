@@ -3,11 +3,11 @@ import { InferSchemaType, Schema, model } from "mongoose";
 const postSchema = new Schema(
   {
     imgUrl: { type: String, required: true },
-    caption: { type: String, default: "", select: false },
+    caption: { type: String, default: "" },
     uploaderId: { type: String, required: true },
-    description: { type: String, default: "", select: false },
-    topic: { type: [String], select: false },
-    allowComment: { type: Boolean, default: true, select: false },
+    description: { type: String, default: "" },
+    topic: { type: [String] },
+    allowComment: { type: Boolean, default: true },
     comments: {
       type: [
         {

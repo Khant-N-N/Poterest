@@ -16,6 +16,12 @@ router.delete("/delete-post/:id", postControllers.DeletePost);
 router.post("/saved-post/", postControllers.SavedPost);
 router.post("/removed-post/", postControllers.RemoveSavedPost);
 
-router.patch("/comment", CRControllers.AddAComment);
-router.patch("/reply", CRControllers.ReplyComment);
+router.get("/:postId/comment", CRControllers.GetComments);
+router.post("/:postId/comment", CRControllers.AddAComment);
+router.delete("/:postId/comment/:commentId", CRControllers.DeleteComment);
+router.post("/:postId/reply/:commentId", CRControllers.ReplyComment);
+
+router.get("/:postId/react", CRControllers.GetReactions);
+router.post("/:postId/react", CRControllers.AddReaction);
+
 export default router;
