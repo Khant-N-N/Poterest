@@ -232,11 +232,11 @@ const PostDetails = () => {
 
           <div className="sticky bottom-0 bg-[var(--light)] border-t-2 p-5">
             <div className="flex justify-between items-center mb-4 font-medium relative">
-              <p>
+              {/* <p>
                 {state.postData.comments.length
                   ? state.postData.comments.length + " comments"
                   : "What do you think?"}
-              </p>
+              </p> */}
 
               <Reacts postData={state.postData} />
             </div>

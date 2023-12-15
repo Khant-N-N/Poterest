@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Post } from "../models/post.model";
+import { Post, Comment } from "../models/post.model";
 
 export interface IntialCreateFormProp {
   imgUrl?: string;
@@ -57,4 +57,30 @@ export const RemoveSavedPost = async (postId: string) => {
 
 export const DeletePost = async (postId: string) => {
   await axios.delete(`/api/posts/delete-post/${postId}`);
+};
+
+export const GetCommentsOfPost = async (postId: string): Promise<Comment[]> => {
+  const response = await axios.get(`/api/posts/${postId}/comment`);
+  return response.data;
+};
+
+export const AddCommentsToPost = async (
+  postId: string,
+  newComment: Comment
+) => {
+  const response = await axios.post(`/api/posts/${postId}/comment`, newComment);
+  return response.data;
+};
+
+export const GetReactsOfPost = async (postId: string) => {
+  const response = await axios.get(`/api/posts/${postId}/react`);
+  return response.data;
+};
+
+export const AddReactionToPost = async (
+  postId: string,
+  newComment: Comment
+) => {
+  const response = await axios.post(`/api/posts/${postId}/comment`, newComment);
+  return response.data;
 };
