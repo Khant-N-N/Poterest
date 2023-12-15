@@ -6,6 +6,7 @@ import { GetTargetUser } from "../../networks/user.api";
 import love from "../../assets/reacts/heart.png";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { PiHeartStraightBold } from "react-icons/pi";
+import { FaCircleUser } from "react-icons/fa6";
 interface comment {
   id: string;
   commenterId?: string;
@@ -67,16 +68,23 @@ const CommentData = ({ comment, commenterId, createdAt, likes }: comment) => {
   return (
     <>
       <div className="flex text-[16px] w-full">
-        <img
-          src={commenter?.avatar || logInUser?.avatar}
-          alt={commenter?.username || logInUser?.username}
-          className="w-8 h-8 rounded-full object-cover mr-2"
-        />
+        {loading ? (
+          <FaCircleUser className="text-[30px] me-3" />
+        ) : (
+          <img
+            loading="lazy"
+            src={commenter?.avatar || logInUser?.avatar}
+            alt={commenter?.username || logInUser?.username}
+            className="w-8 h-8 rounded-full object-cover mr-2"
+          />
+        )}
         <div className="flex flex-wrap">
           <p>
-            <span className="font-medium mr-3 xs:text-[18px]">
-              {commenter?.username || logInUser?.username}
-            </span>
+            {!loading && (
+              <span className="font-medium mr-3 xs:text-[18px]">
+                {commenter?.username || logInUser?.username}
+              </span>
+            )}
             {comment}
           </p>
           <div className="w-full text-[15px] flex gap-4 mt-2 items-center">
