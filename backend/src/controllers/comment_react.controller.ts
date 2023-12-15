@@ -60,7 +60,7 @@ export const GetComments: RequestHandler = async (req, res, next) => {
       .exec();
 
     if (!commentOfPost) throw createHttpError(404, "Post doesn't exist.");
-    res.status(200).json(commentOfPost);
+    res.status(200).json(commentOfPost.comments);
   } catch (error) {
     next(error);
   }
@@ -164,7 +164,7 @@ export const GetReactions: RequestHandler = async (req, res, next) => {
       .exec();
 
     if (!reactsOfPost) throw createHttpError(404, "Post doesn't exist.");
-    res.status(200).json(reactsOfPost);
+    res.status(200).json(reactsOfPost.reacts);
   } catch (error) {
     next(error);
   }
