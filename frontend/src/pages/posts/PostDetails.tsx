@@ -232,17 +232,7 @@ const PostDetails = () => {
 
           <div className="sticky bottom-0 bg-[var(--light)] border-t-2 p-5">
             <div className="flex justify-between items-center mb-4 font-medium relative">
-              <p>
-                {state.postData.comments.length ? (
-                  <span>
-                    {state.postData.comments.length}{" "}
-                    <span className="hidden xs:inline">com</span>ment
-                    {state.postData.comments.length > 1 && "s"}
-                  </span>
-                ) : (
-                  "What do you think?"
-                )}
-              </p>
+              <p>What do you think?</p>
 
               <Reacts postData={state.postData} />
             </div>
