@@ -184,6 +184,9 @@ export const AddReaction: RequestHandler = async (req, res, next) => {
   const postId = req.params.postId;
 
   try {
+    if (!mongoose.isValidObjectId(reactorId))
+      throw createHttpError(401, "Please Login first");
+
     if (!mongoose.isValidObjectId(postId))
       throw createHttpError(400, "Invalid post Id");
 
@@ -196,14 +199,21 @@ export const AddReaction: RequestHandler = async (req, res, next) => {
       )
       .exec();
     if (!post) throw createHttpError(404, "Post not found.");
+
     const getIndex = post.reacts.findIndex(
       (reaction) => reaction.reactorId?.toString() === reactorId?.toString()
     );
-    const reactorIdStr = reactorId as unknown as string;
-    if (getIndex !== -1) {
+    const getReact = post.reacts.find(
+      (reaction) => reaction.reactorId?.toString() === reactorId?.toString()
+    );
+
+    if (getIndex !== -1 && getReact?.react === react) {
       post.reacts.splice(getIndex, 1);
+    } else if (getIndex !== -1 && getReact?.react !== react) {
+      post.reacts.splice(getIndex, 1);
+      post.reacts.push({ reactorId: reactorId?.toString(), react });
     } else {
-      post.reacts.push({ reactorId: reactorIdStr, react });
+      post.reacts.push({ reactorId: reactorId?.toString(), react });
     }
     const updatedPost = await post.save();
 
