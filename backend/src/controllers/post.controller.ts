@@ -76,7 +76,9 @@ export const GetTargetPost: RequestHandler = async (req, res, next) => {
     if (!mongoose.isValidObjectId(postId))
       throw createHttpError(400, "Invalid User Id");
 
-    const Posts = await PostModel.findById(postId).exec();
+    const Posts = await PostModel.findById(postId)
+      .select("+comments +reacts")
+      .exec();
     if (!Posts) throw createHttpError(404, "Post doesn't exist.");
     res.status(200).json(Posts);
   } catch (error) {
