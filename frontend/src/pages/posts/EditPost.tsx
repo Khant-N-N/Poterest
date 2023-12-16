@@ -22,20 +22,19 @@ const EditPost = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  useEffect(
-    () => setEditPost(createdPosts?.filter((post) => post._id === id)[0]),
-    [id, createdPosts]
-  );
-  useEffect(
-    () =>
-      setEditForm({
-        caption: editPost?.caption,
-        description: editPost?.description,
-        topic: editPost?.topic,
-        allowComment: editPost?.allowComment,
-      }),
-    [editPost]
-  );
+  useEffect(() => {
+    const postToEdit = createdPosts?.find((post) => post._id === id);
+    setEditPost(postToEdit);
+  }, [id, createdPosts]);
+
+  useEffect(() => {
+    setEditForm({
+      caption: editPost?.caption,
+      description: editPost?.description,
+      topic: editPost?.topic,
+      allowComment: editPost?.allowComment,
+    });
+  }, [editPost]);
 
   const handleEdit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -97,7 +96,7 @@ const EditPost = () => {
         <label className="switch">
           <input
             type="checkbox"
-            defaultChecked={editForm.allowComment}
+            checked={editForm?.allowComment}
             onChange={() =>
               setEditForm({
                 ...editForm,
