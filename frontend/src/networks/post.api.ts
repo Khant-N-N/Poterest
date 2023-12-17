@@ -66,7 +66,7 @@ export const GetCommentsOfPost = async (postId: string): Promise<Comment[]> => {
 
 export const AddCommentsToPost = async (
   postId: string,
-  newComment: Comment
+  newComment: { commenterId: string | undefined; comment: string }
 ) => {
   const response = await axios.post(`/api/posts/${postId}/comment`, newComment);
   return response.data;

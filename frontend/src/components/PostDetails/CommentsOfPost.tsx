@@ -5,23 +5,27 @@ import { Comment, Post } from "../../models/post.model";
 import { GetCommentsOfPost } from "../../networks/post.api";
 import Loader from "../Loader";
 import CommentData from "./CommentData";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../app/store";
+import { setAddComments } from "../../features/postSlice";
 
 interface CommentProps {
   postData: Post;
 }
 
 const CommentsOfPost = ({ postData }: CommentProps) => {
+  const { addedComments } = useSelector((state: RootState) => state.post);
   const [seeComment, setSeeComment] = useState(false);
-  const [comments, setComments] = useState<Comment[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const fetchComments = async (id: string) => {
     try {
       setLoading(true);
       setError(null);
       const commentsData = await GetCommentsOfPost(id);
-      setComments(commentsData);
+      dispatch(setAddComments(commentsData));
       setLoading(false);
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -51,8 +55,8 @@ const CommentsOfPost = ({ postData }: CommentProps) => {
               <Loader />
             </div>
           )}
-          {comments.length && !loading && !error
-            ? comments.map((comment) => (
+          {addedComments && !loading && !error
+            ? addedComments.map((comment) => (
                 <div
                   key={comment._id}
                   className="flex flex-col xs:px-5 items-end"

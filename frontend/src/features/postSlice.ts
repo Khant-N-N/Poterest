@@ -1,16 +1,18 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Post } from "../models/post.model";
+import { Comment, Post } from "../models/post.model";
 
 export interface PostSlice {
   createdPosts: Post[] | null;
   isPostDetailShow: boolean;
   postId: string | null;
+  addedComments: Comment[];
 }
 
 const initialState: PostSlice = {
   createdPosts: null,
   isPostDetailShow: false,
   postId: null,
+  addedComments: [],
 };
 
 const postSlice = createSlice({
@@ -31,9 +33,17 @@ const postSlice = createSlice({
     setPostId: (state, action: PayloadAction<string>) => {
       state.postId = action.payload;
     },
+    setAddComments: (state, action: PayloadAction<Comment[]>) => {
+      state.addedComments = action.payload;
+    },
   },
 });
 
-export const { addCreatedPosts, deletePost, showPostDetail, setPostId } =
-  postSlice.actions;
+export const {
+  addCreatedPosts,
+  deletePost,
+  showPostDetail,
+  setPostId,
+  setAddComments,
+} = postSlice.actions;
 export default postSlice.reducer;
