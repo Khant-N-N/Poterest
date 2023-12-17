@@ -20,24 +20,26 @@ interface Comment {
 
 export const AddAComment: RequestHandler = async (req, res, next) => {
   const postId = req.params.postId;
-  const newComment = req.body.newComment as Comment;
+  const commenterId = req.body.commenterId;
+  const comment = req.body.comment;
 
   try {
     if (!mongoose.isValidObjectId(postId))
       throw createHttpError(400, "Invalid post Id");
+    if (!commenterId) throw createHttpError(401, "Log In first.");
 
     const result = await PostModel.findByIdAndUpdate(
       postId,
       {
         $push: {
-          comments: { ...newComment, createdAt: new Date() },
+          comments: { commenterId, comment, createdAt: new Date() },
         },
       },
       { new: true, fields: { comments: 1 } }
     );
 
     if (result) {
-      res.status(200).json(result);
+      res.status(200).json(result.comments);
     } else {
       throw createHttpError(404, "Post or Comment not found");
     }
