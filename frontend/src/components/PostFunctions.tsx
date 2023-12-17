@@ -1,16 +1,14 @@
-import { MdDownload } from "react-icons/md";
-import { FaPen, FaTrash, FaRegHeart, FaHeart } from "react-icons/fa6";
-import { HiShare } from "react-icons/hi";
-import { useSelector } from "react-redux";
-import { RootState } from "../app/store";
-import React, { useRef, useEffect, useState, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { saveAs } from "file-saver";
-import { useDispatch } from "react-redux";
-import { getAuthenticatedUser } from "../features/userSlice";
-import { setPostId, showPostDetail } from "../features/postSlice";
-import { Post } from "../models/post.model";
 import axios from "axios";
+import React, { useEffect, useRef, useState } from "react";
+import { FaHeart, FaPen, FaRegHeart, FaTrash } from "react-icons/fa6";
+import { HiShare } from "react-icons/hi";
+import { MdDownload } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { RootState } from "../app/store";
+import { setPostId, showPostDetail } from "../features/postSlice";
+import { getAuthenticatedUser } from "../features/userSlice";
+import { Post } from "../models/post.model";
 import { AddSavedPost, RemoveSavedPost } from "../networks/post.api";
 
 interface IdProps {
@@ -246,4 +244,4 @@ const ClickFunc = ({ onClick, post, deletePost }: IdProps) => {
   );
 };
 
-export { HoverFunc, ClickFunc };
+export { ClickFunc, HoverFunc };
