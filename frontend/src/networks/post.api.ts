@@ -72,6 +72,18 @@ export const AddCommentsToPost = async (
   return response.data;
 };
 
+export const ReplyToComment = async (
+  postId: string,
+  commentId: string,
+  reply: { replierId: string; reply: string }
+): Promise<Comment> => {
+  const response = await axios.post(
+    `/api/posts/${postId}/reply/${commentId}`,
+    reply
+  );
+  return response.data;
+};
+
 export const GetReactsOfPost = async (postId: string) => {
   const response = await axios.get(`/api/posts/${postId}/react`);
   return response.data;

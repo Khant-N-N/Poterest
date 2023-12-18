@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { Comment, Post } from "../../models/post.model";
 import { GetCommentsOfPost } from "../../networks/post.api";
@@ -55,7 +55,7 @@ const CommentsOfPost = ({ postData }: CommentProps) => {
               <Loader />
             </div>
           )}
-          {addedComments && !loading && !error
+          {addedComments.length && !loading && !error
             ? addedComments.map((comment) => (
                 <div
                   key={comment._id}
@@ -83,6 +83,7 @@ const CommentBox = ({ commentData }: { commentData: Comment }) => {
   return (
     <>
       <CommentData
+        onReply={(bool) => setSeeReply(bool)}
         id={_id}
         comment={comment}
         commenterId={commenterId}
@@ -106,8 +107,9 @@ const CommentBox = ({ commentData }: { commentData: Comment }) => {
           seeReply &&
           replies?.map((reply) => (
             <CommentData
+              onReply={(bool) => setSeeReply(bool)}
               key={reply._id}
-              id={reply._id}
+              id={_id}
               comment={reply.reply}
               commenterId={reply.replierId}
               createdAt={reply.replyAt}
