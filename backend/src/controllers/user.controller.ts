@@ -69,7 +69,7 @@ export const SignIn: RequestHandler<
   try {
     if (!email || !password) throw createHttpError("parameters are missing");
     const findUser = await UserModel.findOne({ email: email })
-      .select("+password")
+      .select("+password +saved")
       .exec();
     if (!findUser) throw createHttpError(401, "Invalid Credential");
 
