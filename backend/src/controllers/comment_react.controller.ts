@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import PostModel from "../models/post.model";
 
 interface Reply {
-  likes: string[];
+  likes?: string[];
   reply?: string | null | undefined;
   replierId?: string | null | undefined;
   replyAt?: Date | null | undefined;
@@ -71,7 +71,8 @@ export const GetComments: RequestHandler = async (req, res, next) => {
 export const ReplyComment: RequestHandler = async (req, res, next) => {
   const postId = req.params.postId;
   const commentId = req.params.commentId;
-  const newReply: Reply = req.body.newReply;
+  const reply: string = req.body.reply;
+  const replierId: string = req.body.replierId;
 
   try {
     if (!mongoose.isValidObjectId(postId))
@@ -102,11 +103,11 @@ export const ReplyComment: RequestHandler = async (req, res, next) => {
     if (!comment) {
       return res.status(404).json({ message: "Comment not found" });
     }
-    comment.replies.push({ ...newReply, replyAt: new Date() });
+    comment.replies.push({ replierId, reply, replyAt: new Date() });
 
     await post.save();
 
-    res.status(201).json({ message: "Reply added successfully", post });
+    res.status(201).json(comment);
   } catch (error) {
     next(error);
   }
