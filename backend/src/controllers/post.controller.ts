@@ -161,7 +161,7 @@ export const SavedPost: RequestHandler<unknown, unknown, Saved> = async (
     if (!mongoose.isValidObjectId(userId))
       throw createHttpError(400, "Invalid user Id");
 
-    const user = await UserModel.findById(userId);
+    const user = await UserModel.findById(userId).select("+saved").exec();
     if (!user) throw createHttpError(404, "User doesn't exist.");
 
     user.saved = [...user.saved, addedSavedPost];
@@ -184,7 +184,7 @@ export const RemoveSavedPost: RequestHandler<
     if (!mongoose.isValidObjectId(userId))
       throw createHttpError(400, "Invalid user Id");
 
-    const user = await UserModel.findById(userId);
+    const user = await UserModel.findById(userId).select("+saved");
     if (!user) throw createHttpError(404, "User doesn't exist.");
 
     user.saved = user.saved.filter((post) => post._id !== removeSavedPost);

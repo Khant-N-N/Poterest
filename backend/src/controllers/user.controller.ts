@@ -52,7 +52,11 @@ export const SignUp: RequestHandler<
     });
 
     req.session.userId = CreatedUser._id;
-    res.status(201).json(CreatedUser);
+    const findUser = await UserModel.findOne({ email: CreatedUser.email })
+      .select("+saved")
+      .exec();
+
+    res.status(201).json(findUser);
   } catch (error) {
     next(error);
   }
