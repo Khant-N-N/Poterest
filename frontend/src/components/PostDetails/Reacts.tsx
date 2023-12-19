@@ -61,6 +61,7 @@ const Reacts = ({ postData }: ReactionsProps) => {
         setIsadd(false);
       }
       if (currentReact && !isadd) {
+        if (reactionAmount === 0) return;
         updateLikesAmount = reactionAmount - 1;
         setIsadd(true);
         setReactionAmount(updateLikesAmount);
