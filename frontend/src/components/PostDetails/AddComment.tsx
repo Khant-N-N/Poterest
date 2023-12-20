@@ -57,24 +57,26 @@ const AddComment = ({ postData }: AddCommentProps) => {
           className="w-10 h-10 md:w-14 md:h-14 rounded-full object-cover"
         />
         {postData?.allowComment ? (
-          <input
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-            type="text"
-            placeholder="Add a comment"
-            className="p-4 bg-[var(--sec-light)] focus:bg-transparent focus:border-2 outline-none rounded-full w-full"
-          />
+          <>
+            <input
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              type="text"
+              placeholder="Add a comment"
+              className="p-4 bg-[var(--sec-light)] focus:bg-transparent focus:border-2 outline-none rounded-full w-full"
+            />
+            <button
+              disabled={loading || commentText === ""}
+              className="absolute disabled:opacity-40 right-4 bg-[var(--pri-red)] p-2 rounded-full text-white"
+            >
+              <IoSend />
+            </button>
+          </>
         ) : (
           <p className="text-gray-400 text-[15px] md:text-[19px]">
             This comment section is disabled by the owner
           </p>
         )}
-        <button
-          disabled={loading}
-          className="absolute disabled:opacity-40 right-4 bg-[var(--pri-red)] p-2 rounded-full text-white"
-        >
-          <IoSend />
-        </button>
       </form>
     </>
   );
