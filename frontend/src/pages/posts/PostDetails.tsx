@@ -17,6 +17,7 @@ import { Post } from "../../models/post.model";
 import { User } from "../../models/user.model";
 import { GetTargetPostDetails } from "../../networks/post.api";
 import { GetTargetUser } from "../../networks/user.api";
+import { TbBorderCorners } from "react-icons/tb";
 
 interface InitialValuesTypes {
   postData: Post | null;
@@ -156,7 +157,17 @@ const PostDetails = () => {
             text="delete"
             postId={state.postData._id}
           />
-          <a href={state.postData.imgUrl} target="_blank">
+          <div className="relative group">
+            <div className="w-full h-full absolute hidden group-hover:flex items-center justify-center text-[24px] bg-black/50">
+              <a
+                href={state.postData.imgUrl}
+                target="_blank"
+                title="view image"
+                className="p-2 border-2 border-[var(--sec-light)] hover:scale-[1.1] text-[var(--sec-light)] rounded-lg"
+              >
+                <TbBorderCorners />
+              </a>
+            </div>
             <img
               id="image"
               loading="lazy"
@@ -164,7 +175,7 @@ const PostDetails = () => {
               alt={state.postData.caption}
               className="w-full h-auto object-contain"
             />
-          </a>
+          </div>
           <div className="relative flex justify-between px-8 pt-4 pb-10 gap-2">
             {state.isShowMenu && (
               <ClickFunc
