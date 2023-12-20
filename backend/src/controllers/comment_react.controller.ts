@@ -174,16 +174,16 @@ export const GetReactions: RequestHandler = async (req, res, next) => {
 };
 
 enum ReactType {
-  GoodIdea = "good_idea",
-  Love = "love",
-  Thanks = "thanks",
-  Wow = "wow",
-  Haha = "haha",
+  good_idea = "good_idea",
+  love = "love",
+  thanks = "thanks",
+  wow = "wow",
+  haha = "haha",
 }
 
 export const AddReaction: RequestHandler = async (req, res, next) => {
   const reactorId = req.session.userId;
-  const react: ReactType = req.body.react;
+  const react = req.body.react as ReactType;
   const postId = req.params.postId;
 
   try {
