@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { PiHeartStraightBold } from "react-icons/pi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
@@ -9,6 +9,7 @@ import thanks from "../../assets/reacts/thanks.png";
 import wow from "../../assets/reacts/wow.png";
 import { Reaction } from "../../models/post.model";
 import { AddRemoveReactionToPost } from "../../networks/post.api";
+import GetReactors from "./GetReactors";
 
 enum reactions {
   good_idea = "good_idea",
@@ -33,12 +34,26 @@ interface ReactionsProps {
 
 const Reacts = ({ postId, Reacts }: ReactionsProps) => {
   const { logInUser } = useSelector((state: RootState) => state.user);
+  const [seeReactors, setSeeReactors] = useState(false);
   const [postReacts, setPostReacts] = useState(Reacts);
   const [currentReact, setCurrentReact] = useState<reactions | null>(null);
   const [reactionTypes, setReactionTypes] = useState<string[]>([]);
   const [topThreeReacts, setTopThreeReacts] = useState<[string, number][]>([]);
   const [reactionAmount, setReactionAmount] = useState(0);
-  const [isadd, setIsadd] = useState(true);
+  const [isadd, setIsadd] = useState(false);
+
+  const showReactorRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const closeDisplay = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (showReactorRef.current && !showReactorRef.current.contains(target)) {
+        setSeeReactors(false);
+      }
+    };
+    document.addEventListener("mousedown", closeDisplay);
+
+    return () => document.removeEventListener("mousedown", closeDisplay);
+  }, []);
 
   const giveReaction = async (
     e: React.MouseEvent<HTMLImageElement | HTMLDivElement, MouseEvent>
@@ -120,7 +135,20 @@ const Reacts = ({ postId, Reacts }: ReactionsProps) => {
 
   return (
     <div className="flex gap-3 items-center">
-      <div className="flex gap-2 cursor-pointer relative">
+      {seeReactors && (
+        <div
+          ref={showReactorRef}
+          className="absolute -top-32 bg-[var(--light)] right-0 border shadow-2xl w-[18rem] max-h-[9rem] overflow-y-scroll scrollbar-hide rounded py-4 px-2"
+        >
+          {postReacts.map((reac) => (
+            <GetReactors reac={reac} key={reac._id} />
+          ))}
+        </div>
+      )}
+      <div
+        onClick={() => setSeeReactors(!seeReactors)}
+        className="flex gap-2 cursor-pointer relative"
+      >
         {reactionAmount > 0 && reactionAmount}
 
         {postReacts?.length === 0 && currentReact && (
