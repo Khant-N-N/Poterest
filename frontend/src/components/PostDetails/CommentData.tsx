@@ -8,7 +8,8 @@ import { BiDotsVerticalRounded } from "react-icons/bi";
 import { PiHeartStraightBold } from "react-icons/pi";
 import { FaCircleUser } from "react-icons/fa6";
 import { ReplyToComment } from "../../networks/post.api";
-import { updateReplyComment } from "../../features/postSlice";
+import { showPostDetail, updateReplyComment } from "../../features/postSlice";
+import { Link } from "react-router-dom";
 interface comment {
   id: string;
   commenterId?: string;
@@ -110,19 +111,37 @@ const CommentData = ({
         {loading ? (
           <FaCircleUser className="text-[30px] me-3" />
         ) : (
-          <img
-            loading="lazy"
-            src={commenter?.avatar || logInUser?.avatar}
-            alt={commenter?.username || logInUser?.username}
-            className="w-8 h-8 rounded-full object-cover mr-2"
-          />
+          <Link
+            onClick={() => dispatch(showPostDetail(false))}
+            to={
+              logInUser?._id === commenterId
+                ? "/profile"
+                : `/profile/${commenterId}`
+            }
+          >
+            <img
+              loading="lazy"
+              src={commenter?.avatar || logInUser?.avatar}
+              alt={commenter?.username || logInUser?.username}
+              className="w-8 h-8 rounded-full object-cover mr-2"
+            />
+          </Link>
         )}
-        <div className="flex flex-wrap">
+        <div className="flex flex-wrap w-[90%]">
           <p>
             {!loading && (
-              <span className="font-medium mr-3 xs:text-[18px]">
-                {commenter?.username || logInUser?.username}
-              </span>
+              <Link
+                onClick={() => dispatch(showPostDetail(false))}
+                to={
+                  logInUser?._id === commenterId
+                    ? "/profile"
+                    : `/profile/${commenterId}`
+                }
+              >
+                <span className="font-medium mr-3 xs:text-[18px] hover:underline">
+                  {commenter?.username || logInUser?.username}
+                </span>
+              </Link>
             )}
             {comment}
           </p>
