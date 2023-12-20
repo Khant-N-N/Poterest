@@ -25,14 +25,10 @@ const HoverFunc = ({ post, deletePost }: IdProps) => {
   const [saveLoading, setSaveLoading] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  // const handleDownload = () => {
-  //   saveAs(imgUrl, `poterest-${postId}.jpg`);
-  // };
-
   useEffect(() => {
     if (logInUser)
       setIsSaved(
-        logInUser.saved.some((savedPost) => savedPost._id === post._id)
+        logInUser.saved?.some((savedPost) => savedPost._id === post._id)
       );
   }, [logInUser, post._id]);
 
