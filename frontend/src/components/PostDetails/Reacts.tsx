@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PiHeartStraightBold } from "react-icons/pi";
-import { Post } from "../../models/post.model";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import good_idea from "../../assets/reacts/good idea.png";
@@ -8,6 +7,8 @@ import haha from "../../assets/reacts/haha.png";
 import love from "../../assets/reacts/heart.png";
 import thanks from "../../assets/reacts/thanks.png";
 import wow from "../../assets/reacts/wow.png";
+import { Reaction } from "../../models/post.model";
+import { AddRemoveReactionToPost } from "../../networks/post.api";
 
 enum reactions {
   good_idea = "good_idea",
@@ -26,31 +27,41 @@ const reactionImage = {
 };
 
 interface ReactionsProps {
-  postData: Post;
+  postId: string;
+  Reacts: Reaction[];
 }
 
-const Reacts = ({ postData }: ReactionsProps) => {
+const Reacts = ({ postId, Reacts }: ReactionsProps) => {
   const { logInUser } = useSelector((state: RootState) => state.user);
+  const [postReacts, setPostReacts] = useState(Reacts);
   const [currentReact, setCurrentReact] = useState<reactions | null>(null);
   const [reactionTypes, setReactionTypes] = useState<string[]>([]);
   const [topThreeReacts, setTopThreeReacts] = useState<[string, number][]>([]);
   const [reactionAmount, setReactionAmount] = useState(0);
   const [isadd, setIsadd] = useState(true);
 
-  const giveReaction = (
+  const giveReaction = async (
     e: React.MouseEvent<HTMLImageElement | HTMLDivElement, MouseEvent>
   ) => {
     if (
       e.target instanceof HTMLImageElement ||
       e.target instanceof HTMLDivElement
     ) {
-      const reactionId =
+      let reactionId =
         e.target.id === "" && !currentReact
           ? reactions.love
           : (e.target.id as reactions);
+
+      if (e.target.id === "" && currentReact) reactionId = currentReact;
       setCurrentReact((prev) => (prev === reactionId ? null : reactionId));
 
       if (currentReact && reactionId !== currentReact) {
+        try {
+          const data = await AddRemoveReactionToPost(postId, reactionId);
+          setPostReacts(data);
+        } catch (error) {
+          console.log(error);
+        }
         return;
       }
 
@@ -66,13 +77,20 @@ const Reacts = ({ postData }: ReactionsProps) => {
         setIsadd(true);
         setReactionAmount(updateLikesAmount);
       }
+      try {
+        const data = await AddRemoveReactionToPost(postId, reactionId);
+        setPostReacts(data);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
   useEffect(() => {
-    if (postData.reacts) {
-      setReactionAmount(postData.reacts.length);
-      postData.reacts.map((rec) => {
+    if (postReacts) {
+      setReactionAmount(postReacts.length);
+      setReactionTypes([]);
+      postReacts.map((rec) => {
         setReactionTypes((prevTypes) => [...prevTypes, rec.react]);
         if (rec.reactorId === logInUser?._id) {
           setCurrentReact(rec.react as reactions);
@@ -80,7 +98,7 @@ const Reacts = ({ postData }: ReactionsProps) => {
         }
       });
     }
-  }, [logInUser?._id, postData.reacts]);
+  }, [logInUser?._id, postReacts]);
 
   useEffect(() => {
     const reactionsCount: Record<string, number> = {
@@ -105,7 +123,7 @@ const Reacts = ({ postData }: ReactionsProps) => {
       <div className="flex gap-2 cursor-pointer relative">
         {reactionAmount > 0 && reactionAmount}
 
-        {postData.reacts?.length === 0 && currentReact && (
+        {postReacts?.length === 0 && currentReact && (
           <img
             src={reactionImage[currentReact]}
             alt="react"

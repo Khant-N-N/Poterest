@@ -234,7 +234,10 @@ const PostDetails = () => {
             <div className="flex justify-between items-center mb-4 font-medium relative">
               <p>What do you think?</p>
 
-              <Reacts postData={state.postData} />
+              <Reacts
+                postId={state.postData._id}
+                Reacts={state.postData.reacts}
+              />
             </div>
             <AddComment postData={state.postData} />
           </div>

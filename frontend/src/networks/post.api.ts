@@ -89,10 +89,12 @@ export const GetReactsOfPost = async (postId: string) => {
   return response.data;
 };
 
-export const AddReactionToPost = async (
+export const AddRemoveReactionToPost = async (
   postId: string,
-  newComment: Comment
+  react: string
 ) => {
-  const response = await axios.post(`/api/posts/${postId}/comment`, newComment);
+  const response = await axios.post(`/api/posts/${postId}/react`, {
+    react: react,
+  });
   return response.data;
 };
