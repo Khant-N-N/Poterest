@@ -10,6 +10,7 @@ import wow from "../../assets/reacts/wow.png";
 import { Reaction } from "../../models/post.model";
 import { AddRemoveReactionToPost } from "../../networks/post.api";
 import GetReactors from "./GetReactors";
+import { FaXmark } from "react-icons/fa6";
 
 enum reactions {
   good_idea = "good_idea",
@@ -138,8 +139,14 @@ const Reacts = ({ postId, Reacts }: ReactionsProps) => {
       {seeReactors && (
         <div
           ref={showReactorRef}
-          className="absolute -top-32 bg-[var(--light)] right-0 border shadow-2xl w-[18rem] max-h-[9rem] overflow-y-scroll scrollbar-hide rounded py-4 px-2"
+          className="absolute -top-32 bg-[var(--light)] right-0 border shadow-2xl w-[18rem] max-h-[9rem] overflow-y-scroll scrollbar-hide rounded pb-4 px-2"
         >
+          <div className="w-full flex justify-end">
+            <FaXmark
+              onClick={() => setSeeReactors(false)}
+              className="hover:bg-[var(--sec-light)] rounded-full cursor-pointer my-3"
+            />
+          </div>
           {postReacts.map((reac) => (
             <GetReactors reac={reac} key={reac._id} />
           ))}
