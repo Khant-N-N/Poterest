@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { User } from "../../models/user.model";
@@ -6,10 +6,15 @@ import { GetTargetUser } from "../../networks/user.api";
 import love from "../../assets/reacts/heart.png";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { PiHeartStraightBold } from "react-icons/pi";
-import { FaCircleUser } from "react-icons/fa6";
-import { ReplyToComment } from "../../networks/post.api";
-import { showPostDetail, updateReplyComment } from "../../features/postSlice";
+import { FaCircleUser, FaXmark } from "react-icons/fa6";
+import { DeleteComment, ReplyToComment } from "../../networks/post.api";
+import {
+  showPostDetail,
+  updateReplyComment,
+  deleteComment,
+} from "../../features/postSlice";
 import { Link } from "react-router-dom";
+import NotiToast from "../NotiToast";
 interface comment {
   id: string;
   commenterId?: string;
@@ -31,6 +36,8 @@ const CommentData = ({
   const [loading, setLoading] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isReply, setIsReply] = useState(false);
+  const [isToast, setIsToast] = useState(false);
+  const [commentSetting, setCommentSetting] = useState(false);
   const [replyLoading, setReplyLoading] = useState(false);
   const [replyText, setReplyText] = useState("");
   const [commenter, setCommenter] = useState<User | null>(null);
@@ -40,8 +47,33 @@ const CommentData = ({
     timeDifferenceInHours: 0,
     timeDifferenceInDays: 0,
   });
-
+  const settingRef = useRef<HTMLDivElement | null>(null);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const handleCloseSetting = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (settingRef.current && !settingRef.current.contains(target)) {
+        setCommentSetting(false);
+      }
+    };
+    document.addEventListener("mousedown", handleCloseSetting);
+    return () => document.removeEventListener("mousedown", handleCloseSetting);
+  }, []);
+
+  const handleDeleteComment = async () => {
+    try {
+      setLoading(true);
+      await DeleteComment(postId!, id);
+      dispatch(deleteComment(id));
+      setIsToast(true);
+      setInterval(() => setIsToast(false), 1000);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log("error in comment delete", error);
+    }
+  };
 
   const handleReply = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -107,6 +139,7 @@ const CommentData = ({
     CommentedTime = timeStamp.timeDifferenceInDays + "d";
   return (
     <>
+      <NotiToast isToast={isToast} message="Comment Deleted" />
       <div className="flex text-[16px] w-full mb-2">
         {loading ? (
           <FaCircleUser className="text-[30px] me-3" />
@@ -169,7 +202,39 @@ const CommentData = ({
                 />
               </div>
             )}
-            <BiDotsVerticalRounded className="cursor-pointer text-[26px] rotate-90 hover:bg-[var(--sec-light)] rounded-full" />
+            <div ref={settingRef} className="relative">
+              {commentSetting && (
+                <div className="absolute right-0 top-0 shadow-2xl bg-[var(--light)] border pt-3 px-10 rounded-lg">
+                  <button
+                    type="button"
+                    className="opacity-[.8] hover:opacity-100 mb-3"
+                  >
+                    Report
+                  </button>
+                  {logInUser?._id === commenterId && (
+                    <button
+                      type="button"
+                      disabled={loading}
+                      onClick={handleDeleteComment}
+                      className="opacity-[.8] hover:opacity-100 mb-3"
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
+              )}
+              {!commentSetting ? (
+                <BiDotsVerticalRounded
+                  onClick={() => setCommentSetting(!commentSetting)}
+                  className="cursor-pointer text-[26px] rotate-90 hover:bg-[var(--sec-light)] rounded-full"
+                />
+              ) : (
+                <FaXmark
+                  onClick={() => setCommentSetting(!commentSetting)}
+                  className="cursor-pointer text-[20px] rotate-90 hover:bg-[var(--sec-light)] rounded-full"
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>

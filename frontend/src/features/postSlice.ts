@@ -41,6 +41,11 @@ const postSlice = createSlice({
         com._id === action.payload._id ? action.payload : com
       );
     },
+    deleteComment: (state, action: PayloadAction<string>) => {
+      state.addedComments = state.addedComments.filter(
+        (com) => com._id !== action.payload
+      );
+    },
   },
 });
 
@@ -51,5 +56,6 @@ export const {
   setPostId,
   setAddComments,
   updateReplyComment,
+  deleteComment,
 } = postSlice.actions;
 export default postSlice.reducer;
