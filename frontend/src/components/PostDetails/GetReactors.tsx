@@ -9,6 +9,8 @@ import { User } from "../../models/user.model";
 import { GetTargetUser } from "../../networks/user.api";
 import { FaCircleUser } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { showPostDetail } from "../../features/postSlice";
 
 enum reactions {
   good_idea = "good_idea",
@@ -30,6 +32,7 @@ const GetReactors = ({ reac }: { reac: Reaction }) => {
   const [reactor, setReactor] = useState<User>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch();
   useEffect(() => {
     const getReactor = async () => {
       try {
@@ -46,24 +49,29 @@ const GetReactors = ({ reac }: { reac: Reaction }) => {
   }, [reac.reactorId]);
 
   return (
-    <div className="w-full flex gap-2 items-center mb-2 text-[15px]">
-      <img
-        src={reactionImage[reac.react as reactions]}
-        alt={reac.react}
-        className="w-7 h-7 object-contain"
-      />
+    <div className="w-full flex gap-2 items-center justify-between mb-3 text-[15px] px-2">
       {loading ? (
         <FaCircleUser />
       ) : (
-        <>
+        <Link
+          className="flex gap-2"
+          to={`/profile/${reactor?._id}`}
+          onClick={() => dispatch(showPostDetail(false))}
+        >
           <img
+            loading="lazy"
             src={reactor?.avatar}
             alt={reactor?.username}
             className="w-6 h-6 object-cover rounded-full"
           />
           <p>{reactor?.username}</p>
-        </>
+        </Link>
       )}
+      <img
+        src={reactionImage[reac.react as reactions]}
+        alt={reac.react}
+        className="w-7 h-7 object-contain"
+      />
     </div>
   );
 };
