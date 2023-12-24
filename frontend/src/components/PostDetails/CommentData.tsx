@@ -33,12 +33,16 @@ const CommentData = ({
 }: comment) => {
   const { logInUser } = useSelector((state: RootState) => state.user);
   const { postId } = useSelector((state: RootState) => state.post);
+
   const [loading, setLoading] = useState(false);
+  const [commentloading, setCommentLoading] = useState(false);
+  const [replyLoading, setReplyLoading] = useState(false);
+
   const [isLiked, setIsLiked] = useState(false);
   const [isReply, setIsReply] = useState(false);
-  const [isToast, setIsToast] = useState(false);
+  const [isToastMsg, setIsToastMsg] = useState(false);
+
   const [commentSetting, setCommentSetting] = useState(false);
-  const [replyLoading, setReplyLoading] = useState(false);
   const [replyText, setReplyText] = useState("");
   const [commenter, setCommenter] = useState<User | null>(null);
   const [timeStamp, setTimeStamp] = useState({
@@ -63,14 +67,17 @@ const CommentData = ({
 
   const handleDeleteComment = async () => {
     try {
-      setLoading(true);
+      setCommentLoading(true);
+
+      setIsToastMsg(true);
       await DeleteComment(postId!, id);
       dispatch(deleteComment(id));
-      setIsToast(true);
-      setInterval(() => setIsToast(false), 1000);
-      setLoading(false);
+
+      setIsToastMsg(false);
+
+      setCommentLoading(false);
     } catch (error) {
-      setLoading(false);
+      setCommentLoading(false);
       console.log("error in comment delete", error);
     }
   };
@@ -139,7 +146,7 @@ const CommentData = ({
     CommentedTime = timeStamp.timeDifferenceInDays + "d";
   return (
     <>
-      <NotiToast isToast={isToast} message="Comment Deleted" />
+      {<NotiToast isToast={isToastMsg} message="Comment Deleted" />}
       <div className="flex text-[16px] w-full mb-2">
         {loading ? (
           <FaCircleUser className="text-[30px] me-3" />
@@ -214,7 +221,7 @@ const CommentData = ({
                   {logInUser?._id === commenterId && (
                     <button
                       type="button"
-                      disabled={loading}
+                      disabled={commentloading}
                       onClick={handleDeleteComment}
                       className="opacity-[.8] hover:opacity-100 mb-3"
                     >
