@@ -134,13 +134,75 @@ export const DeleteComment: RequestHandler = async (req, res, next) => {
       { new: true, fields: { comments: 1 } }
     );
 
-    if (!postUpdate) {
-      return res.status(404).json({ message: "Post not found" });
+    if (!postUpdate) throw createHttpError(404, "comment not found.");
+
+    res.status(204).json({ message: "Comment deleted" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+interface DeletedReply {
+  _id: mongoose.Types.ObjectId;
+  likes?: string[];
+  reply?: string | null | undefined;
+  replierId?: string | null | undefined;
+  replyAt?: Date | null | undefined;
+}
+
+interface DeletedComment {
+  _id: mongoose.Types.ObjectId;
+  likes: string[];
+  commenterId?: string | null | undefined;
+  comment?: string | null | undefined;
+  createdAt?: Date | null | undefined;
+  replies: DeletedReply[];
+}
+
+export const DeleteReply: RequestHandler = async (req, res, next) => {
+  const commentId = req.params.commentId;
+  const postId = req.params.postId;
+  const replyId = req.params.replyId;
+  const deleterId = req.session.userId;
+  try {
+    if (
+      !mongoose.isValidObjectId(postId) ||
+      !mongoose.isValidObjectId(commentId) ||
+      !mongoose.isValidObjectId(replyId) ||
+      !mongoose.isValidObjectId(deleterId)
+    ) {
+      throw createHttpError(400, "Invalid IDs");
     }
 
-    const updatedComments = postUpdate.comments;
+    const post = await PostModel.findById(postId).select("+comments").exec();
 
-    res.status(200).json(updatedComments);
+    if (!post) {
+      throw createHttpError(404, "Post not found.");
+    }
+
+    const comment = post.comments?.find((com) =>
+      (com as DeletedComment)._id.equals(commentId)
+    ) as DeletedComment;
+
+    if (!comment) {
+      throw createHttpError(404, "Comment not found.");
+    }
+
+    const replyIndex = comment.replies?.findIndex((rep) =>
+      rep._id.equals(replyId)
+    );
+
+    if (replyIndex === -1) {
+      throw createHttpError(404, "Reply not found.");
+    }
+
+    // Remove the reply from the array
+    comment.replies.splice(replyIndex, 1);
+
+    // Save the changes to the database
+    await post.save();
+
+    res.status(204).json({ message: "Reply deleted" });
   } catch (error) {
     next(error);
   }

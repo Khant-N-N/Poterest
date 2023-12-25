@@ -19,6 +19,10 @@ router.post("/removed-post/", postControllers.RemoveSavedPost);
 router.get("/:postId/comment", CRControllers.GetComments);
 router.post("/:postId/comment", CRControllers.AddAComment);
 router.delete("/:postId/comment/:commentId", CRControllers.DeleteComment);
+router.delete(
+  "/:postId/comment/:commentId/:replyId",
+  CRControllers.DeleteReply
+);
 router.post("/:postId/reply/:commentId", CRControllers.ReplyComment);
 
 router.get("/:postId/react", CRControllers.GetReactions);
