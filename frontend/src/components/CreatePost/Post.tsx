@@ -9,7 +9,11 @@ import { User } from "../../models/user.model";
 import { GetTargetUser } from "../../networks/user.api";
 import { ClickFunc, HoverFunc } from "../PostFunctions";
 import DeletePostConfirm from "./DeletePostConfirm";
-import { setPostId, showPostDetail } from "../../features/postSlice";
+import {
+  savedUserData,
+  setPostId,
+  showPostDetail,
+} from "../../features/postSlice";
 
 interface PostProps {
   post: Post;
@@ -17,6 +21,7 @@ interface PostProps {
 
 const Post = ({ post }: PostProps) => {
   const { logInUser } = useSelector((state: RootState) => state.user);
+  const { savedUsers } = useSelector((state: RootState) => state.post);
   const [postOwner, setPostOwner] = useState<User | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [isShowMenu, setIsShowMenu] = useState(false);
@@ -26,18 +31,31 @@ const Post = ({ post }: PostProps) => {
   const getPostOwner = useCallback(async () => {
     try {
       setProfileLoading(true);
-      const user = await GetTargetUser(post.uploaderId);
-      setPostOwner(user);
+      const existingUser = savedUsers.find(
+        (user) => user._id === post.uploaderId
+      );
+
+      if (!existingUser) {
+        const user = await GetTargetUser(post.uploaderId);
+
+        dispatch(savedUserData(user));
+        setPostOwner(user);
+      } else {
+        setPostOwner(existingUser);
+      }
+
       setProfileLoading(false);
     } catch (error) {
       console.log(error);
       setProfileLoading(false);
     }
-  }, [post.uploaderId]);
+  }, [post.uploaderId, dispatch, savedUsers]);
 
   useEffect(() => {
-    if (logInUser?._id !== post.uploaderId) getPostOwner();
-  }, [getPostOwner, logInUser?._id, post.uploaderId]);
+    if (logInUser?._id !== post.uploaderId) {
+      getPostOwner();
+    }
+  }, [logInUser?._id, post.uploaderId]);
   return (
     <div className={`mb-7 relative`}>
       <DeletePostConfirm

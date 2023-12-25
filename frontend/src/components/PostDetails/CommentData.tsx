@@ -12,6 +12,7 @@ import {
   showPostDetail,
   updateReplyComment,
   deleteComment,
+  savedUserData,
 } from "../../features/postSlice";
 import { Link } from "react-router-dom";
 import NotiToast from "../NotiToast";
@@ -32,7 +33,7 @@ const CommentData = ({
   onReply,
 }: comment) => {
   const { logInUser } = useSelector((state: RootState) => state.user);
-  const { postId } = useSelector((state: RootState) => state.post);
+  const { postId, savedUsers } = useSelector((state: RootState) => state.post);
 
   const [loading, setLoading] = useState(false);
   const [commentloading, setCommentLoading] = useState(false);
@@ -109,18 +110,26 @@ const CommentData = ({
   const getCommentOwner = useCallback(async () => {
     try {
       setLoading(true);
-      const user = await GetTargetUser(commenterId!);
-      setCommenter(user);
+      const existingUser = savedUsers.find((user) => user._id === commenterId);
+      if (!existingUser) {
+        const user = await GetTargetUser(commenterId!);
+        dispatch(savedUserData(user));
+        setCommenter(user);
+      } else {
+        setCommenter(existingUser);
+      }
       setLoading(false);
     } catch (error) {
       console.log(error);
       setLoading(false);
     }
-  }, [commenterId]);
+  }, [commenterId, dispatch, savedUsers]);
 
   useEffect(() => {
-    if (logInUser?._id !== commenterId && commenterId) getCommentOwner();
-  }, [getCommentOwner, logInUser?._id, commenterId]);
+    if (logInUser?._id !== commenterId && commenterId) {
+      getCommentOwner();
+    }
+  }, [logInUser?._id, commenterId]);
 
   const calculateTime = useCallback(() => {
     const currentTime = new Date().getTime();
