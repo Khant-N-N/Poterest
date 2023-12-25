@@ -84,6 +84,7 @@ const CommentBox = ({ commentData }: { commentData: Comment }) => {
     <>
       <CommentData
         onReply={(bool) => setSeeReply(bool)}
+        isReplyComment={false}
         id={_id}
         comment={comment}
         commenterId={commenterId}
@@ -105,11 +106,13 @@ const CommentBox = ({ commentData }: { commentData: Comment }) => {
         )}
         {replies?.length > 0 &&
           seeReply &&
-          replies?.map((reply) => (
+          replies?.map((reply, key) => (
             <CommentData
+              isReplyComment={true}
               onReply={(bool) => setSeeReply(bool)}
-              key={reply._id}
+              key={key + 1}
               id={_id}
+              replyId={reply._id}
               comment={reply.reply}
               commenterId={reply.replierId}
               createdAt={reply.replyAt}

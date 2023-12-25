@@ -7,17 +7,24 @@ import love from "../../assets/reacts/heart.png";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { PiHeartStraightBold } from "react-icons/pi";
 import { FaCircleUser, FaXmark } from "react-icons/fa6";
-import { DeleteComment, ReplyToComment } from "../../networks/post.api";
+import {
+  DeleteComment,
+  DeleteReply,
+  ReplyToComment,
+} from "../../networks/post.api";
 import {
   showPostDetail,
   updateReplyComment,
   deleteComment,
   savedUserData,
+  deleteReply,
 } from "../../features/postSlice";
 import { Link } from "react-router-dom";
 import NotiToast from "../NotiToast";
 interface comment {
   id: string;
+  isReplyComment: boolean;
+  replyId?: string;
   commenterId?: string;
   comment?: string;
   createdAt?: string;
@@ -26,6 +33,8 @@ interface comment {
 }
 const CommentData = ({
   id,
+  isReplyComment,
+  replyId,
   comment,
   commenterId,
   createdAt,
@@ -71,11 +80,17 @@ const CommentData = ({
       setCommentLoading(true);
 
       setIsToastMsg(true);
-      await DeleteComment(postId!, id);
-      dispatch(deleteComment(id));
+      if (!isReplyComment && postId) {
+        await DeleteComment(postId, id);
+        dispatch(deleteComment(id));
+      }
+      if (isReplyComment && postId && replyId) {
+        await DeleteReply(postId, id, replyId);
+        dispatch(deleteReply({ id, replyId }));
+      }
 
       setIsToastMsg(false);
-
+      setCommentSetting(false);
       setCommentLoading(false);
     } catch (error) {
       setCommentLoading(false);
