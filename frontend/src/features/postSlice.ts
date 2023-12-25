@@ -1,11 +1,13 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Comment, Post } from "../models/post.model";
+import { User } from "../models/user.model";
 
 export interface PostSlice {
   createdPosts: Post[] | null;
   isPostDetailShow: boolean;
   postId: string | null;
   addedComments: Comment[];
+  savedUsers: User[];
 }
 
 const initialState: PostSlice = {
@@ -13,6 +15,7 @@ const initialState: PostSlice = {
   isPostDetailShow: false,
   postId: null,
   addedComments: [],
+  savedUsers: [],
 };
 
 const postSlice = createSlice({
@@ -46,6 +49,13 @@ const postSlice = createSlice({
         (com) => com._id !== action.payload
       );
     },
+    savedUserData: (state, action: PayloadAction<User>) => {
+      state.savedUsers = state.savedUsers.find(
+        (user) => user._id === action.payload._id
+      )
+        ? [...state.savedUsers]
+        : [...state.savedUsers, action.payload];
+    },
   },
 });
 
@@ -57,5 +67,6 @@ export const {
   setAddComments,
   updateReplyComment,
   deleteComment,
+  savedUserData,
 } = postSlice.actions;
 export default postSlice.reducer;
