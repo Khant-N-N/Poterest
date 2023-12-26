@@ -72,6 +72,23 @@ export const AddCommentsToPost = async (
   return response.data;
 };
 
+export const DeleteComment = async (postId: string, commentId: string) => {
+  const response = await axios.delete(
+    `/api/posts/${postId}/comment/${commentId}`
+  );
+  return response.data;
+};
+export const DeleteReply = async (
+  postId: string,
+  commentId: string,
+  replyId: string
+) => {
+  const response = await axios.delete(
+    `/api/posts/${postId}/comment/${commentId}/${replyId}`
+  );
+  return response.data;
+};
+
 export const ReplyToComment = async (
   postId: string,
   commentId: string,
