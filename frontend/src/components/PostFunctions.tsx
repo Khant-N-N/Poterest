@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { FaHeart, FaPen, FaRegHeart, FaTrash } from "react-icons/fa6";
-import { HiShare } from "react-icons/hi";
 import { MdDownload } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -233,9 +232,6 @@ const ClickFunc = ({ onClick, post, deletePost }: IdProps) => {
       >
         <MdDownload /> Download
       </a>
-      <div className="cursor-pointer p-2 flex gap-2 items-center opacity-70 hover:opacity-100">
-        <HiShare /> Share
-      </div>
     </div>
   );
 };
