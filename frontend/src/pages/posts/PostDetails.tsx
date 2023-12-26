@@ -133,7 +133,7 @@ const PostDetails = () => {
     <div className="fixed top-0 pt-10 md:pt-24 flex flex-col items-center w-full h-full z-30 px-4 bg-[var(--light)]">
       <div
         onClick={() => dispatch(showPostDetail(false))}
-        className="p-3 fixed cursor-pointer z-10 left-5 md:left-16 md:text-[22px] shadow-2xl rounded-full bg-[var(--sec-light)]"
+        className="p-3 fixed cursor-pointer z-10 left-5 md:left-16 md:text-[1.4rem] shadow-2xl rounded-full bg-[var(--sec-light)]"
       >
         <FaArrowLeft />
       </div>
@@ -158,7 +158,7 @@ const PostDetails = () => {
             postId={state.postData._id}
           />
           <div className="relative group">
-            <div className="w-full h-full absolute hidden group-hover:flex items-center justify-center text-[24px] bg-black/50">
+            <div className="w-full h-full absolute hidden group-hover:flex items-center justify-center text-[1.5rem] bg-black/50">
               <a
                 href={state.postData.imgUrl}
                 target="_blank"
@@ -199,12 +199,12 @@ const PostDetails = () => {
                   payload: !state.isShowMenu,
                 })
               }
-              className="cursor-pointer text-[30px] rotate-90 hover:bg-[var(--sec-light)] rounded-full"
+              className="cursor-pointer text-[1.9rem] rotate-90 hover:bg-[var(--sec-light)] rounded-full"
             />
           </div>
           <div className="mx-5 md:mx-9 flex justify-between">
             {state.profileLoading ? (
-              <FaCircleUser className="text-[20px]" />
+              <FaCircleUser className="text-[1.3rem]" />
             ) : (
               <Link
                 onClick={() => dispatch(showPostDetail(false))}
@@ -223,7 +223,7 @@ const PostDetails = () => {
                 <p className="flex flex-col font-medium text-[17px]">
                   {state.postOwner?.username || logInUser?.username}
                   {state.postOwner?.followers.length === 0 && (
-                    <span className="text-[14px] font-normal">
+                    <span className="text-[.9rem] font-normal">
                       {state.postOwner?.followers.length}{" "}
                       {state.postOwner?.followers.length > 1
                         ? "followers"
@@ -243,7 +243,7 @@ const PostDetails = () => {
 
           <div className="sticky bottom-0 bg-[var(--light)] border-t-2 p-5">
             <div className="flex justify-between items-center mb-4 font-medium relative">
-              <p>What do you think?</p>
+              <p className="w-1/2">What do you think?</p>
 
               <Reacts
                 postId={state.postData._id}
