@@ -6,10 +6,12 @@ import Loader from "../../components/Loader";
 import ProfilePosts from "../../components/UserProfile/ProfilePosts";
 import { User } from "../../models/user.model";
 import { GetTargetUser } from "../../networks/user.api";
+import NotiToast from "../../components/NotiToast";
 
 const UserProfilePublic = () => {
   const [thisUser, setThisUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isToast, setIsToast] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { userId } = useParams();
 
@@ -34,6 +36,7 @@ const UserProfilePublic = () => {
   }, [userId]);
   return (
     <>
+      <NotiToast message="Link Copied" isToast={isToast} />
       {loading && (
         <div className="h-screen w-full bg-black/40 z-50 flex justify-center items-center">
           <Loader />
@@ -46,8 +49,15 @@ const UserProfilePublic = () => {
       )}
       {!loading && !error && (
         <main className="flex flex-col items-center gap-4 justify-center min-h-screen mt-24">
-          <div className="fixed top-0 w-full flex justify-end items-center gap-6 py-3 px-4 md:hidden bg-[var(--light)] z-30">
-            <HiShare className="text-[25px] cursor-pointer" />
+          <div className="fixed top-0 w-full flex justify-end items-center gap-6 py-3 px-4 md:hidden bg-[var(--light)] z-50">
+            <HiShare
+              onClick={() => {
+                navigator.clipboard.writeText(window.location.href);
+                setIsToast(true);
+                setTimeout(() => setIsToast(false), 1000);
+              }}
+              className="text-[25px] cursor-pointer"
+            />
           </div>
           <div className="w-28 h-28 rounded-full overflow-hidden">
             <img

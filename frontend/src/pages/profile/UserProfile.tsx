@@ -6,6 +6,7 @@ import { RiSettingsFill } from "react-icons/ri";
 import { HiShare } from "react-icons/hi";
 import { useEffect, useRef, useState } from "react";
 import { FaXmark } from "react-icons/fa6";
+import NotiToast from "../../components/NotiToast";
 
 interface NavProps {
   setIsLogOut: (boolean: boolean) => void;
@@ -14,8 +15,14 @@ interface NavProps {
 const UserProfile = ({ setIsLogOut, setIsDelete }: NavProps) => {
   const { logInUser } = useSelector((state: RootState) => state.user);
   const [showSetting, setShowSetting] = useState(false);
-
+  const [isToast, setIsToast] = useState(false);
   const displaySettingRef = useRef<HTMLDivElement | null>(null);
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(window.location.href + `/${logInUser?._id}`);
+    setIsToast(true);
+    setTimeout(() => setIsToast(false), 800);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -33,8 +40,9 @@ const UserProfile = ({ setIsLogOut, setIsDelete }: NavProps) => {
   }, [displaySettingRef]);
   return (
     <main className="flex flex-col items-center gap-4 justify-center min-h-screen mt-24 relative">
+      <NotiToast isToast={isToast} message="Link Copied" />
       <div className="fixed z-50 top-0 w-full flex justify-end items-center gap-6 py-3 px-4 md:hidden bg-[var(--light)]">
-        <HiShare className="text-[25px] cursor-pointer" />
+        <HiShare onClick={copyLink} className="text-[25px] cursor-pointer" />
         <RiSettingsFill
           onClick={() => setShowSetting(true)}
           className="text-[25px] cursor-pointer"
@@ -89,12 +97,12 @@ const UserProfile = ({ setIsLogOut, setIsDelete }: NavProps) => {
       <h3 className="text-[30px] md:text-[36px]">{logInUser?.username}</h3>
       <h4>0 following</h4>
       <div className="flex gap-3">
-        <Link
-          to="/edit"
+        <button
+          onClick={copyLink}
           className="bg-[var(--sec-light)] p-4 rounded-full hidden md:inline-block"
         >
           Share
-        </Link>
+        </button>
         <Link to="/edit" className="bg-[var(--sec-light)] p-4 rounded-full">
           Edit Profile
         </Link>
