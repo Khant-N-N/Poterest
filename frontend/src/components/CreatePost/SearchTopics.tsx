@@ -21,7 +21,7 @@ const SearchTopics = ({ onSearch }: SearchTopicsProps) => {
         value={searchKeyword}
         onChange={handleSearchTopic}
         placeholder="Search Topics"
-        className="bg-[var(--light)] rounded-full px-4 py-2 w-full focus:outline-none focus:ring focus:border-blue-400"
+        className="bg-[var(--light)] rounded-2xl shadow-2xl px-4 py-2 w-full focus:outline-none focus:ring focus:border-blue-400"
       />
       {isType ? (
         <FaXmark
