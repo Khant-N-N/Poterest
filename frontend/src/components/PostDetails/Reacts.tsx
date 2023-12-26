@@ -9,8 +9,7 @@ import thanks from "../../assets/reacts/thanks.png";
 import wow from "../../assets/reacts/wow.png";
 import { Reaction } from "../../models/post.model";
 import { AddRemoveReactionToPost } from "../../networks/post.api";
-import GetReactors from "./GetReactors";
-import { FaXmark } from "react-icons/fa6";
+import ReactsFilter from "./ReactsFilter";
 
 enum reactions {
   good_idea = "good_idea",
@@ -39,6 +38,7 @@ const Reacts = ({ postId, Reacts }: ReactionsProps) => {
   const [postReacts, setPostReacts] = useState(Reacts);
   const [currentReact, setCurrentReact] = useState<reactions | null>(null);
   const [reactionTypes, setReactionTypes] = useState<string[]>([]);
+  const [allReacts, setAllReacts] = useState<[string, number][]>([]);
   const [topThreeReacts, setTopThreeReacts] = useState<[string, number][]>([]);
   const [reactionAmount, setReactionAmount] = useState(0);
   const [isadd, setIsadd] = useState(false);
@@ -128,10 +128,12 @@ const Reacts = ({ postId, Reacts }: ReactionsProps) => {
       reactionsCount[currRec] += 1;
     });
 
-    const reactionsArray = Object.entries(reactionsCount)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 3);
-    setTopThreeReacts(reactionsArray);
+    const reactionsArray = Object.entries(reactionsCount).sort(
+      (a, b) => b[1] - a[1]
+    );
+
+    setAllReacts(reactionsArray);
+    setTopThreeReacts(reactionsArray.slice(0, 3));
   }, [reactionTypes]);
 
   return (
@@ -139,17 +141,13 @@ const Reacts = ({ postId, Reacts }: ReactionsProps) => {
       {seeReactors && (
         <div
           ref={showReactorRef}
-          className="absolute -top-32 bg-[var(--light)] right-0 border shadow-2xl w-[18rem] max-h-[9rem] overflow-y-scroll scrollbar-hide rounded pb-4 px-2"
+          className="absolute -top-80 bg-[var(--light)] -right-3 border shadow-2xl w-[18rem] h-[19rem] overflow-y-scroll scrollbar-hide rounded pb-4 px-2"
         >
-          <div className="w-full flex justify-end">
-            <FaXmark
-              onClick={() => setSeeReactors(false)}
-              className="hover:bg-[var(--sec-light)] rounded-full cursor-pointer my-3"
-            />
-          </div>
-          {postReacts.map((reac) => (
-            <GetReactors reac={reac} key={reac._id} />
-          ))}
+          <ReactsFilter
+            allReacts={allReacts}
+            postReacts={postReacts}
+            setSeeReactors={(bool) => setSeeReactors(bool)}
+          />
         </div>
       )}
       <div
