@@ -4,7 +4,21 @@ import { useState, useEffect } from "react";
 import Topic from "./Topic";
 import SearchTopics from "./SearchTopics";
 
-const topics = ["Comedy", "music", "anime", "games", "girls", "boys", "cars"];
+const topics = [
+  "memes",
+  "music",
+  "anime",
+  "games",
+  "girls",
+  "boys",
+  "cars",
+  "nature",
+  "movies",
+  "tv shows",
+  "wallpapers",
+  "beautiful",
+  "cartoon",
+];
 
 type SelectedTopicsType = typeof topics;
 
