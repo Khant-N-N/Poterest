@@ -2,14 +2,18 @@ import express, { NextFunction, Request, Response } from "express";
 import createHttpError, { isHttpError } from "http-errors";
 import morgan from "morgan";
 import userRouter from "./routes/user.route";
+import chatRouter from "./routes/chat.route";
 import MongoStore from "connect-mongo";
 import session from "express-session";
 import env from "./utils/ValidEnv";
 import postRouter from "./routes/post.route";
 import { requireAuth } from "./utils/auth";
+import http from "http";
+import { Server } from "socket.io";
 
 const app = express();
-
+const server = http.createServer(app);
+const io = new Server(server);
 app.use(morgan("dev"));
 app.use(express.json());
 
@@ -33,6 +37,17 @@ app.use(
 
 app.use("/api/user", userRouter);
 app.use("/api/posts", requireAuth, postRouter);
+
+const chatNameSpace = io.of("/chat");
+
+chatNameSpace.on("connection", (sock) => {
+  console.log("User connected to the chat");
+  sock.on("disconnect", () => {
+    console.log("User disconnected from the chat");
+  });
+});
+
+app.use("/api/chat", requireAuth, chatRouter);
 
 app.use((req, res, next) => {
   next(createHttpError(404, "Endpoint not found"));
