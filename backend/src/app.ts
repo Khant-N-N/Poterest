@@ -10,10 +10,12 @@ import postRouter from "./routes/post.route";
 import { requireAuth } from "./utils/auth";
 import http from "http";
 import { Server } from "socket.io";
+import cors from "cors";
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
+app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
@@ -35,6 +37,14 @@ app.use(
   })
 );
 
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true, // enable credentials (cookies, authorization headers, etc.)
+  })
+);
+
 app.use("/api/user", userRouter);
 app.use("/api/posts", requireAuth, postRouter);
 
@@ -42,6 +52,9 @@ const chatNameSpace = io.of("/chat");
 
 chatNameSpace.on("connection", (sock) => {
   console.log("User connected to the chat");
+
+  sock.emit("welcome", { message: "Welcome to the chat!" });
+
   sock.on("disconnect", () => {
     console.log("User disconnected from the chat");
   });
@@ -64,4 +77,5 @@ app.use((error: unknown, req: Request, res: Response, next: NextFunction) => {
   res.status(status).json({ error: errorMessage });
 });
 
+export { io };
 export default app;
