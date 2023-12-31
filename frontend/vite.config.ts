@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:5000" || "https://poterest-api.vercel.app",
+        target: "http://localhost:5000" || "https://poterest-api.onrender.com",
         secure: false,
       },
     },
