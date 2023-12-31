@@ -1,13 +1,13 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../app/store";
+import { setAddComments } from "../../features/postSlice";
 import { Comment, Post } from "../../models/post.model";
 import { GetCommentsOfPost } from "../../networks/post.api";
 import Loader from "../Loader";
 import CommentData from "./CommentData";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../app/store";
-import { setAddComments } from "../../features/postSlice";
 
 interface CommentProps {
   postData: Post;

@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { DeletePost } from "../../networks/post.api";
 import axios from "axios";
-import { deletePost } from "../../features/postSlice";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { deletePost } from "../../features/postSlice";
+import { DeletePost } from "../../networks/post.api";
 
 interface DeleteProps {
   onDisplay: (boolean: boolean) => void;
