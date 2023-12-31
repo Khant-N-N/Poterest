@@ -1,13 +1,14 @@
 import axios from "axios";
 import { User } from "../models/user.model";
+const url = "https://poterest-api.onrender.com";
 
 export const GetAuthenticatedUser = async (): Promise<User> => {
-  const response = await axios.get("/api/user");
+  const response = await axios.get(`${url}/api/user`);
   return response.data;
 };
 
 export const GetTargetUser = async (id: string): Promise<User> => {
-  const response = await axios.get(`/api/user/${id}`);
+  const response = await axios.get(`${url}/api/user/${id}`);
   return response.data;
 };
 
@@ -16,7 +17,7 @@ interface LogInInfo {
   password: string;
 }
 export const LogInUser = async (info: LogInInfo): Promise<User> => {
-  const response = await axios.post("/api/user/signin", info);
+  const response = await axios.post(`${url}/api/user/signin`, info);
   return response.data;
 };
 
@@ -26,12 +27,12 @@ interface SignUpInfo {
   password: string;
 }
 export const SignUpUser = async (info: SignUpInfo): Promise<User> => {
-  const response = await axios.post("/api/user/signup", info);
+  const response = await axios.post(`${url}/api/user/signup`, info);
   return response.data;
 };
 
 export const LogOutUser = async () => {
-  const response = await axios.post("/api/user/logout");
+  const response = await axios.post(`${url}/api/user/logout`);
   return response.data;
 };
 
@@ -48,7 +49,7 @@ export const UpdateUser = async ({
   id,
   formData,
 }: UpdateProps): Promise<User> => {
-  const response = await axios.post(`/api/user/update/${id}`, formData);
+  const response = await axios.post(`${url}/api/user/update/${id}`, formData);
   return response.data;
 };
 
@@ -57,7 +58,7 @@ export const DeleteUser = async ({
 }: {
   password: string | undefined;
 }) => {
-  const response = await axios.post(`/api/user/delete/`, {
+  const response = await axios.post(`${url}/api/user/delete/`, {
     password: password,
   });
   return response.data;
@@ -68,6 +69,9 @@ interface PasswordProps {
   newPassword: string;
 }
 export const ChangeNewPassword = async (formData: PasswordProps) => {
-  const response = await axios.post("/api/user/change-password", formData);
+  const response = await axios.post(
+    `${url}/api/user/change-password`,
+    formData
+  );
   return response.data;
 };
