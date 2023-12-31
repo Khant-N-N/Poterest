@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { FaHeart, FaPen, FaRegHeart, FaTrash } from "react-icons/fa6";
 import { MdDownload } from "react-icons/md";
@@ -22,7 +21,6 @@ const HoverFunc = ({ post, deletePost }: IdProps) => {
   const dispatch = useDispatch();
   const [isSaved, setIsSaved] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     if (logInUser)
@@ -37,16 +35,12 @@ const HoverFunc = ({ post, deletePost }: IdProps) => {
     e.stopPropagation();
     try {
       setSaveLoading(true);
-      setSaveError(null);
       const data = await AddSavedPost(post);
       dispatch(getAuthenticatedUser(data));
       setIsSaved(true);
       setSaveLoading(false);
     } catch (error) {
       console.log(error);
-      if (axios.isAxiosError(error)) {
-        setSaveError(error.response?.data.error);
-      }
     }
   };
   const handleRemoveSave = async (
@@ -55,16 +49,12 @@ const HoverFunc = ({ post, deletePost }: IdProps) => {
     e.stopPropagation();
     try {
       setSaveLoading(true);
-      setSaveError(null);
       const data = await RemoveSavedPost(post._id);
       dispatch(getAuthenticatedUser(data));
       setIsSaved(false);
       setSaveLoading(false);
     } catch (error) {
       console.log(error);
-      if (axios.isAxiosError(error)) {
-        setSaveError(error.response?.data.error);
-      }
     }
   };
 
@@ -127,7 +117,6 @@ const ClickFunc = ({ onClick, post, deletePost }: IdProps) => {
   const dispatch = useDispatch();
   const [isSaved, setIsSaved] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
   const showMenuRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
 
@@ -154,31 +143,23 @@ const ClickFunc = ({ onClick, post, deletePost }: IdProps) => {
   const handleSavePost = async () => {
     try {
       setSaveLoading(true);
-      setSaveError(null);
       const data = await AddSavedPost(post);
       dispatch(getAuthenticatedUser(data));
       setIsSaved(true);
       setSaveLoading(false);
     } catch (error) {
       console.log(error);
-      if (axios.isAxiosError(error)) {
-        setSaveError(error.response?.data.error);
-      }
     }
   };
   const handleRemoveSave = async () => {
     try {
       setSaveLoading(true);
-      setSaveError(null);
       const data = await RemoveSavedPost(post._id);
       dispatch(getAuthenticatedUser(data));
       setIsSaved(false);
       setSaveLoading(false);
     } catch (error) {
       console.log(error);
-      if (axios.isAxiosError(error)) {
-        setSaveError(error.response?.data.error);
-      }
     }
   };
 

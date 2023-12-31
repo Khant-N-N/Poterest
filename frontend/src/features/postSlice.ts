@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Comment, Post, Reply } from "../models/post.model";
+import { Comment, Post } from "../models/post.model";
 import { User } from "../models/user.model";
 
 export interface PostSlice {

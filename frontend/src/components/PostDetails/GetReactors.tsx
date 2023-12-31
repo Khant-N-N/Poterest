@@ -60,7 +60,7 @@ const GetReactors = ({ reac }: { reac: Reaction }) => {
 
   return (
     <div className="w-full flex gap-2 items-center justify-between mb-3 text-[15px] px-2">
-      {loading ? (
+      {!error && loading ? (
         <FaCircleUser />
       ) : (
         <Link

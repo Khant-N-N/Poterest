@@ -1,37 +1,37 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { LuPenSquare } from "react-icons/lu";
 import { FaSearch } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../app/store";
-import io from "socket.io-client";
-import { ChatBox } from "../models/chat.model";
+// import { useSelector } from "react-redux";
+// import { RootState } from "../app/store";
+// import io from "socket.io-client";
+// import { ChatBox } from "../models/chat.model";
 
 const MessageInbox = () => {
-  const { logInUser } = useSelector((state: RootState) => state.user);
+  // const { logInUser } = useSelector((state: RootState) => state.user);
   const [isType, setIsType] = useState(false);
-  const [chat, setChat] = useState<ChatBox | null>(null);
+  // const [chat, setChat] = useState<ChatBox | null>(null);
   const [searchValue, setSearchValue] = useState("");
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
   };
 
-  useEffect(() => {
-    const socket = io("/chat");
-    socket.on("welcome", (data) => {
-      console.log(data.Message);
-    });
+  // useEffect(() => {
+  //   const socket = io("/chat");
+  //   socket.on("welcome", (data) => {
+  //     console.log(data.Message);
+  //   });
 
-    socket.on("chatUpdate", (updateChat) => {
-      setChat(updateChat);
-    });
-    console.log("connects");
-    return () => {
-      console.log("disconnects");
-      socket.disconnect();
-    };
-  }, []);
+  //   socket.on("chatUpdate", (updateChat) => {
+  //     setChat(updateChat);
+  //   });
+  //   console.log("connects");
+  //   return () => {
+  //     console.log("disconnects");
+  //     socket.disconnect();
+  //   };
+  // }, []);
   return (
     <div className="flex flex-col items-center gap-4 min-h-screen mt-8 md:mt-24 relative">
       <div className="relative">
