@@ -15,7 +15,13 @@ import cors from "cors";
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5173" || ""],
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true, // enable credentials (cookies, authorization headers, etc.)
+  })
+);
 app.use(morgan("dev"));
 app.use(express.json());
 
@@ -34,14 +40,6 @@ app.use(
       // sameSite: "none",
       // secure: process.env.NODE_ENV === "production",
     },
-  })
-);
-
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true, // enable credentials (cookies, authorization headers, etc.)
   })
 );
 

@@ -1,0 +1,29 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "dist/index.js",
+        "use": "@now/node-server"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "/dist/index.js"
+      }
+    ],
+    "env": {
+      "NODE_ENV": "production"
+    },
+    "functions": {
+      "api/**/*.ts": {
+        "runtime": "vercel-node-14"
+      }
+    },
+    "build": {
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+  
