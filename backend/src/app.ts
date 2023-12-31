@@ -17,7 +17,7 @@ const server = http.createServer(app);
 const io = new Server(server);
 app.use(
   cors({
-    origin: ["http://localhost:5173" || "https://poterest.vercel.app"],
+    origin: ["http://localhost:5173", "https://poterest.vercel.app"],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true, // enable credentials (cookies, authorization headers, etc.)
   })
