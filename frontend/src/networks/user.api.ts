@@ -3,12 +3,16 @@ import { User } from "../models/user.model";
 const url = "https://poterest-api.onrender.com";
 
 export const GetAuthenticatedUser = async (): Promise<User> => {
-  const response = await axios.get(`${url}/api/user`);
+  const response = await axios.get(`${url}/api/user`, {
+    withCredentials: true,
+  });
   return response.data;
 };
 
 export const GetTargetUser = async (id: string): Promise<User> => {
-  const response = await axios.get(`${url}/api/user/${id}`);
+  const response = await axios.get(`${url}/api/user/${id}`, {
+    withCredentials: true,
+  });
   return response.data;
 };
 
@@ -17,7 +21,9 @@ interface LogInInfo {
   password: string;
 }
 export const LogInUser = async (info: LogInInfo): Promise<User> => {
-  const response = await axios.post(`${url}/api/user/signin`, info);
+  const response = await axios.post(`${url}/api/user/signin`, info, {
+    withCredentials: true,
+  });
   return response.data;
 };
 
@@ -27,7 +33,9 @@ interface SignUpInfo {
   password: string;
 }
 export const SignUpUser = async (info: SignUpInfo): Promise<User> => {
-  const response = await axios.post(`${url}/api/user/signup`, info);
+  const response = await axios.post(`${url}/api/user/signup`, info, {
+    withCredentials: true,
+  });
   return response.data;
 };
 
