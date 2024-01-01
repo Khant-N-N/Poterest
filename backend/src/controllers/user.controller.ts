@@ -86,6 +86,7 @@ export const SignIn: RequestHandler<
     const userObject = findUser.toObject();
 
     const { password: pass, ...rest } = userObject;
+    console.log(req.session.id);
 
     res.status(201).json(rest);
   } catch (error) {
