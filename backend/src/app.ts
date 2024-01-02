@@ -31,13 +31,13 @@ app.use(
     secret: env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    // rolling: true,
+    rolling: true,
     store: MongoStore.create({
       mongoUrl: env.MONGO_CONNECT,
     }),
     cookie: {
       maxAge: 3 * 24 * 60 * 60 * 1000,
-      sameSite: "lax",
+      sameSite: "none",
       secure: true,
     },
   })
