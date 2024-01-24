@@ -25,6 +25,8 @@ app.use(
 app.use(morgan("dev"));
 app.use(express.json());
 
+app.set("trust proxy", 1);
+
 app.use(
   session({
     name: "poterest_kies",
