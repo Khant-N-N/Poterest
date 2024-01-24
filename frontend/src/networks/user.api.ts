@@ -1,6 +1,7 @@
 import axios from "axios";
 import { User } from "../models/user.model";
 const url = "https://poterest-api.onrender.com";
+// const url = "http://localhost:5000";
 
 export const GetAuthenticatedUser = async (): Promise<User> => {
   const response = await axios.get(`${url}/api/user`, {
@@ -40,7 +41,9 @@ export const SignUpUser = async (info: SignUpInfo): Promise<User> => {
 };
 
 export const LogOutUser = async () => {
-  const response = await axios.post(`${url}/api/user/logout`);
+  const response = await axios.post(`${url}/api/user/logout`, {
+    withCredentials: true,
+  });
   return response.data;
 };
 
@@ -57,7 +60,9 @@ export const UpdateUser = async ({
   id,
   formData,
 }: UpdateProps): Promise<User> => {
-  const response = await axios.post(`${url}/api/user/update/${id}`, formData);
+  const response = await axios.post(`${url}/api/user/update/${id}`, formData, {
+    withCredentials: true,
+  });
   return response.data;
 };
 
@@ -66,9 +71,13 @@ export const DeleteUser = async ({
 }: {
   password: string | undefined;
 }) => {
-  const response = await axios.post(`${url}/api/user/delete/`, {
-    password: password,
-  });
+  const response = await axios.post(
+    `${url}/api/user/delete/`,
+    {
+      password: password,
+    },
+    { withCredentials: true }
+  );
   return response.data;
 };
 
@@ -79,7 +88,8 @@ interface PasswordProps {
 export const ChangeNewPassword = async (formData: PasswordProps) => {
   const response = await axios.post(
     `${url}/api/user/change-password`,
-    formData
+    formData,
+    { withCredentials: true }
   );
   return response.data;
 };

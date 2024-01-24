@@ -2,6 +2,7 @@ import axios from "axios";
 import { Post, Comment } from "../models/post.model";
 
 const url = "https://poterest-api.onrender.com";
+// const url = "http://localhost:5000";
 
 export interface IntialCreateFormProp {
   imgUrl?: string;
@@ -14,22 +15,29 @@ export interface IntialCreateFormProp {
 export const CreateAPost = async (
   formData: IntialCreateFormProp
 ): Promise<Post> => {
-  const response = await axios.post(`${url}/api/posts/upload`, formData);
+  const response = await axios.post(`${url}/api/posts/upload`, formData, {
+    withCredentials: true,
+  });
   return response.data;
 };
 
 export const GetUserPosts = async (): Promise<Post[]> => {
-  const response = await axios.get(`${url}/api/posts/get-user-posts`);
+  const response = await axios.get(`${url}/api/posts/get-user-posts`, {
+    withCredentials: true,
+  });
   return response.data;
 };
 export const GetTargetUserPosts = async (id: string): Promise<Post[]> => {
   const response = await axios.get(
-    `${url}/api/posts/get-target-user-posts/${id}`
+    `${url}/api/posts/get-target-user-posts/${id}`,
+    { withCredentials: true }
   );
   return response.data;
 };
 export const GetTargetPostDetails = async (id: string): Promise<Post> => {
-  const response = await axios.get(`${url}/api/posts/get-post-details/${id}`);
+  const response = await axios.get(`${url}/api/posts/get-post-details/${id}`, {
+    withCredentials: true,
+  });
   return response.data;
 };
 
@@ -41,35 +49,50 @@ interface EditFormProps {
 export const EditMyPost = async ({ editForm, id }: EditFormProps) => {
   const response = await axios.post(
     `${url}/api/posts/update-post/${id}`,
-    editForm
+    editForm,
+    { withCredentials: true }
   );
   return response.data;
 };
 
 export const GetPublicAllPosts = async (): Promise<Post[]> => {
-  const response = await axios.get(`${url}/api/posts/get-public-posts`);
+  const response = await axios.get(`${url}/api/posts/get-public-posts`, {
+    withCredentials: true,
+  });
   return response.data;
 };
 
 export const AddSavedPost = async (post: Post) => {
-  const response = await axios.post(`${url}/api/posts/saved-post`, {
-    saved: post,
-  });
+  const response = await axios.post(
+    `${url}/api/posts/saved-post`,
+    {
+      saved: post,
+    },
+    { withCredentials: true }
+  );
   return response.data;
 };
 export const RemoveSavedPost = async (postId: string) => {
-  const response = await axios.post(`${url}/api/posts/removed-post`, {
-    postId: postId,
-  });
+  const response = await axios.post(
+    `${url}/api/posts/removed-post`,
+    {
+      postId: postId,
+    },
+    { withCredentials: true }
+  );
   return response.data;
 };
 
 export const DeletePost = async (postId: string) => {
-  await axios.delete(`${url}/api/posts/delete-post/${postId}`);
+  await axios.delete(`${url}/api/posts/delete-post/${postId}`, {
+    withCredentials: true,
+  });
 };
 
 export const GetCommentsOfPost = async (postId: string): Promise<Comment[]> => {
-  const response = await axios.get(`${url}/api/posts/${postId}/comment`);
+  const response = await axios.get(`${url}/api/posts/${postId}/comment`, {
+    withCredentials: true,
+  });
   return response.data;
 };
 
@@ -79,14 +102,16 @@ export const AddCommentsToPost = async (
 ) => {
   const response = await axios.post(
     `${url}/api/posts/${postId}/comment`,
-    newComment
+    newComment,
+    { withCredentials: true }
   );
   return response.data;
 };
 
 export const DeleteComment = async (postId: string, commentId: string) => {
   const response = await axios.delete(
-    `${url}/api/posts/${postId}/comment/${commentId}`
+    `${url}/api/posts/${postId}/comment/${commentId}`,
+    { withCredentials: true }
   );
   return response.data;
 };
@@ -96,7 +121,8 @@ export const DeleteReply = async (
   replyId: string
 ) => {
   const response = await axios.delete(
-    `${url}/api/posts/${postId}/comment/${commentId}/${replyId}`
+    `${url}/api/posts/${postId}/comment/${commentId}/${replyId}`,
+    { withCredentials: true }
   );
   return response.data;
 };
@@ -108,13 +134,16 @@ export const ReplyToComment = async (
 ): Promise<Comment> => {
   const response = await axios.post(
     `${url}/api/posts/${postId}/reply/${commentId}`,
-    reply
+    reply,
+    { withCredentials: true }
   );
   return response.data;
 };
 
 export const GetReactsOfPost = async (postId: string) => {
-  const response = await axios.get(`/api/posts/${postId}/react`);
+  const response = await axios.get(`/api/posts/${postId}/react`, {
+    withCredentials: true,
+  });
   return response.data;
 };
 
@@ -122,8 +151,12 @@ export const AddRemoveReactionToPost = async (
   postId: string,
   react: string
 ) => {
-  const response = await axios.post(`${url}/api/posts/${postId}/react`, {
-    react: react,
-  });
+  const response = await axios.post(
+    `${url}/api/posts/${postId}/react`,
+    {
+      react: react,
+    },
+    { withCredentials: true }
+  );
   return response.data;
 };
