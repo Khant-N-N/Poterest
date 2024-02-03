@@ -200,12 +200,18 @@ export const FindPosts: RequestHandler = async (req, res, next) => {
   try {
     if (keyword === "") return;
 
+    const regex = new RegExp(keyword, "i");
+
+    const postsByTopic = await PostModel.find({
+      topic: { $elemMatch: { $regex: regex } },
+    });
+
     const postsByCaption = await PostModel.find({
-      caption: { $regex: keyword, options: "i" },
+      caption: { $regex: regex },
     });
 
     const postsByDescription = await PostModel.find({
-      description: { $regex: keyword, options: "i" },
+      description: { $regex: regex },
     });
 
     const allPosts = [...postsByCaption, ...postsByDescription];
