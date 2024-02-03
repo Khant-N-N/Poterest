@@ -214,7 +214,11 @@ export const FindPosts: RequestHandler = async (req, res, next) => {
       description: { $regex: regex },
     });
 
-    const allPosts = [...postsByCaption, ...postsByDescription];
+    const allPosts = [
+      ...postsByTopic,
+      ...postsByCaption,
+      ...postsByDescription,
+    ];
 
     const returnPosts = allPosts.filter(
       (post, index, self) => index === self.findIndex((p) => p._id === post._id)
