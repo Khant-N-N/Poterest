@@ -194,3 +194,35 @@ export const RemoveSavedPost: RequestHandler<
     next(error);
   }
 };
+
+export const FindPosts: RequestHandler = async (req, res, next) => {
+  const keyword = req.query.keyword as string;
+  try {
+    if (keyword === "") return;
+    const postsByTopic = await PostModel.find({
+      topic: { $in: keyword, options: "i" },
+    });
+
+    const postsByCaption = await PostModel.find({
+      caption: { $regex: keyword, options: "i" },
+    });
+
+    const postsByDescription = await PostModel.find({
+      description: { $regex: keyword, options: "i" },
+    });
+
+    const allPosts = [
+      ...postsByTopic,
+      ...postsByCaption,
+      ...postsByDescription,
+    ];
+
+    const returnPosts = allPosts.filter(
+      (post, index, self) => index === self.findIndex((p) => p._id === post._id)
+    );
+
+    res.status(200).json(returnPosts);
+  } catch (error) {
+    next(error);
+  }
+};

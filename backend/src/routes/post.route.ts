@@ -9,6 +9,7 @@ router.get("/get-user-posts", postControllers.GetUserPosts);
 router.get("/get-post-details/:id", postControllers.GetTargetPost);
 router.get("/get-target-user-posts/:id", postControllers.GetTargetUserPosts);
 router.get("/get-public-posts", postControllers.GetPublicPosts);
+router.get("/find", postControllers.FindPosts);
 
 router.post("/update-post/:id", postControllers.UpdatePost);
 router.delete("/delete-post/:id", postControllers.DeletePost);
