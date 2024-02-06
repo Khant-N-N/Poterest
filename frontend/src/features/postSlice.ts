@@ -3,25 +3,40 @@ import { Comment, Post } from "../models/post.model";
 import { User } from "../models/user.model";
 
 export interface PostSlice {
+  loading: boolean;
+  searchedPosts: Post[];
   createdPosts: Post[] | null;
   isPostDetailShow: boolean;
   postId: string | null;
   addedComments: Comment[];
   savedUsers: User[];
+  searchKeyword: string;
 }
 
 const initialState: PostSlice = {
+  loading: false,
+  searchedPosts: [],
   createdPosts: null,
   isPostDetailShow: false,
   postId: null,
   addedComments: [],
   savedUsers: [],
+  searchKeyword: "",
 };
 
 const postSlice = createSlice({
   name: "post",
   initialState,
   reducers: {
+    setTheLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+    setSearchKeyword: (state, action: PayloadAction<string>) => {
+      state.searchKeyword = action.payload;
+    },
+    setSearchedPosts: (state, action: PayloadAction<Post[]>) => {
+      state.searchedPosts = action.payload;
+    },
     addCreatedPosts: (state, action: PayloadAction<Post[]>) => {
       state.createdPosts = action.payload;
     },
@@ -83,6 +98,9 @@ const postSlice = createSlice({
 });
 
 export const {
+  setSearchKeyword,
+  setTheLoading,
+  setSearchedPosts,
   addCreatedPosts,
   deletePost,
   showPostDetail,

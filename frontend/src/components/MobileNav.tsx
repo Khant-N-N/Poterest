@@ -23,7 +23,7 @@ const MobileNav = () => {
       </NavLink>
       <NavLink
         onClick={() => dispatch(showPostDetail(false))}
-        to="/search"
+        to="/searched-posts"
         className={({ isActive }) =>
           isActive ? "text-black" : "text-gray-400"
         }

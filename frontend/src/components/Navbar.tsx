@@ -71,7 +71,7 @@ const Navbar = ({ setIsLogOut, setIsDelete }: NavProps) => {
       )}
       {logInUser ? (
         <div className="md:flex items-center w-4/5 justify-between hidden">
-          <SearchBox />
+          <SearchBox isMobile={false} />
 
           <div className="flex items-center gap-8">
             <NavLink

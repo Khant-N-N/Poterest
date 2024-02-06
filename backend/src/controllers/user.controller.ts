@@ -86,7 +86,6 @@ export const SignIn: RequestHandler<
     const userObject = findUser.toObject();
 
     const { password: pass, ...rest } = userObject;
-    console.log(req.session.id);
 
     res.status(201).json(rest);
   } catch (error) {
@@ -183,6 +182,20 @@ export const ChangePassword: RequestHandler<
     user.password = hashedNewPassword;
     await user.save();
     res.sendStatus(201);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const SearchUser: RequestHandler = async (req, res, next) => {
+  const keyword = req.body.keyword;
+  try {
+    if (keyword === "") return;
+    const users = await UserModel.find({
+      username: { $regex: keyword, $options: "i" },
+    }).exec();
+    if (!users) throw createHttpError(404, "users not found.");
+    res.status(200).json(users);
   } catch (error) {
     next(error);
   }

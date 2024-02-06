@@ -22,6 +22,7 @@ const EditPost = lazy(() => import("./pages/posts/EditPost"));
 const MessageInbox = lazy(() => import("./pages/MessageInbox"));
 const UserProfile = lazy(() => import("./pages/profile/UserProfile"));
 const ProfileEdit = lazy(() => import("./pages/profile/ProfileEdit"));
+const SearchedPosts = lazy(() => import("./pages/posts/SearchedPosts"));
 
 const App = () => {
   const { isPostDetailShow } = useSelector((state: RootState) => state.post);
@@ -91,6 +92,7 @@ const App = () => {
               }
             />
             <Route path="/edit" element={<ProfileEdit />} />
+            <Route path="/searched-posts" element={<SearchedPosts />} />
           </Route>
         </Routes>
       </Suspense>

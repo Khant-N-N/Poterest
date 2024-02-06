@@ -62,6 +62,13 @@ export const GetPublicAllPosts = async (): Promise<Post[]> => {
   return response.data;
 };
 
+export const FindPosts = async (keyword: string): Promise<Post[]> => {
+  const response = await axios.get(`${url}/api/posts/find?keyword=${keyword}`, {
+    withCredentials: true,
+  });
+  return response.data;
+};
+
 export const AddSavedPost = async (post: Post) => {
   const response = await axios.post(
     `${url}/api/posts/saved-post`,

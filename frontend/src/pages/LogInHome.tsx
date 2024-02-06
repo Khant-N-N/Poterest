@@ -50,7 +50,7 @@ const LogInHomeC = () => {
   }, [checkStillAuthenticated]);
 
   return (
-    <div className="mt-20 md:mt-28 mb-20 md:mb-10 relative">
+    <div className="mt-10 md:mt-28 mb-20 md:mb-10 relative">
       {loading ? (
         <div className="h-screen w-full bg-black/40 z-50 flex justify-center items-center">
           <Loader />
